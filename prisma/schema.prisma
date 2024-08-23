@@ -1,0 +1,122 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  role       Role     @default(USER)
+  username   String   @unique
+  password   String?
+  email      String?  @unique
+  bio        String?
+  avatar     String?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  posts    Post[]
+  likes    Like[]
+  comments Comment[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model AiBot {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  avatar      String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  aiComments AiComment[]
+}
+
+model Like {
+  created_at DateTime @default(now())
+
+  post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  @@unique([postId, userId], name: "id")
+  @@index([userId])
+  @@index([postId])
+}
+
+enum Category {
+  EXERCISE
+  STUDY
+  DIET
+  WAKE_UP
+  READING
+  OTHER
+}
+
+model Post {
+  id          Int    @id @default(autoincrement())
+  description String
+  title       String
+  photo       String
+  views       Int    @default(0)
+
+  category Category
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+
+  likes      Like[]
+  comments   Comment[]
+  aiComments AiComment[]
+
+  @@index([userId])
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  text       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId Int
+  Post   Post @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId Int
+
+  @@index([userId])
+  @@index([postId])
+}
+
+model AiComment {
+  id        Int      @id @default(autoincrement())
+  text      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  aiBot   AiBot @relation(fields: [aiBotId], references: [id])
+  aiBotId Int
+  Post    Post  @relation(fields: [postId], references: [id])
+  postId  Int
+
+  @@index([aiBotId])
+  @@index([postId])
+}

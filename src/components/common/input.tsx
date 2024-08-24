@@ -34,12 +34,12 @@ const _Input = (
           ref={ref}
           type={type}
           id={name}
-          className="w-full h-12 border-b border-underline px-2 py-3 placeholder:text-underline text-md "
           name={name}
           required={required}
           placeholder={placeholder}
           disabled={pending}
           {...rest}
+          className={`w-full h-12 border-b border-underline px-2 py-3 placeholder:text-underline text-md ${rest.className}`}
         />
       </div>
       <div className="h-5 mt-1 pl-2 text-error">{errorMessage}</div>

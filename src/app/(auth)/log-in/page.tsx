@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import Input from "@/components/common/input";
 import Button from "@/components/common/button";
-import Header from "@/components/common/header";
 import { ROUTE_PATHS } from "@/constatns/routePath";
 
 export default function LogInPage() {

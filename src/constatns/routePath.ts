@@ -7,6 +7,7 @@ export const ROUTE_PATHS = {
   POSTS: "/posts",
   CALENDAR: "/calendar",
   PROFILE: (username: string) => `/users/${username}`,
+  SEARCH: "/search",
 } as const;
 
 export const ROUTE_TITLE = {
@@ -30,6 +31,12 @@ export const getRouteTile = (pathname: string) => {
   }
   if (pathname.includes(ROUTE_PATHS.PROFILE(""))) {
     return "프로필";
+  }
+  if (pathname === ROUTE_PATHS.CALENDAR) {
+    return "캘린더";
+  }
+  if (pathname === ROUTE_PATHS.SEARCH) {
+    return "검색";
   }
   return "";
 };

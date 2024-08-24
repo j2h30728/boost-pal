@@ -1,4 +1,4 @@
-import Header from "@/components/common/header";
+import HeaderLayout from "@/components/common/header-layout";
 
 export default async function RootLayout({
   children,
@@ -7,8 +7,7 @@ export default async function RootLayout({
 }>) {
   return (
     <div className="relative">
-      <Header />
-      <div className="pt-[60px] px-5">{children}</div>
+      <HeaderLayout>{children}</HeaderLayout>
     </div>
   );
 }

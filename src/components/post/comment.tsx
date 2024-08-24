@@ -1,5 +1,4 @@
 import { ChatBubbleBottomCenterTextIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import Header from "../common/header";
 
 const comments = [
   {

@@ -5,7 +5,7 @@ import { PlusIcon } from "@heroicons/react/24/solid";
 import Button from "@/components/common/button";
 import Textarea from "@/components/common/textarea";
 import InputChip from "@/components/common/input-chip";
-import Header from "@/components/common/header";
+import HeaderLayout from "@/components/common/header-layout";
 
 const CATEGORIES = ["운동", "공부", "식단", "기상", "독서", "기타"] as const;
 
@@ -14,9 +14,8 @@ export default function AddTweets() {
   const onImageChange = () => {};
 
   return (
-    <div>
-      <Header isBackButton={true} />
-      <form className="p-5 pt-[60px] *:w-full">
+      <HeaderLayout isBackButton={true} >
+      <form className="py-5 *:w-full">
         <div className="flex flex-col gap-5 ">
           <label
             htmlFor="photo"
@@ -45,6 +44,6 @@ export default function AddTweets() {
         </div>
         <Button text="작성 완료" />
       </form>
-    </div>
+      </HeaderLayout>
   );
 }

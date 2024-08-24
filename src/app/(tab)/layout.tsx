@@ -1,4 +1,4 @@
-import Header from "@/components/common/header";
+import HeaderLayout from "@/components/common/header-layout";
 import TabBar from "@/components/common/tab-bar";
 
 export default async function RootLayout({
@@ -8,8 +8,7 @@ export default async function RootLayout({
 }>) {
   return (
     <div className="relative pb-[40px]">
-      <Header />
-      <div className="pt-[60px]">{children}</div>
+      <HeaderLayout>{children}</HeaderLayout>
       <TabBar />
     </div>
   );

@@ -1,3 +1,77 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "Pretendard-Regular";
+  src: url("https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@layer base {
+  a {
+    @apply text-primary;
+  }
+}
+@layer components {
+  .primary-button {
+    @apply bg-primary text-white font-semibold text-[16px] rounded-[13px] py-3 flex justify-center items-center hover:bg-primary-2 active:bg-primary-1;
+  }
+
+  .chip {
+    @apply w-fit border border-primary text-primary rounded-[100px] flex justify-center items-center;
+  }
+
+  .multiline-ellipsis {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* 원하는 줄 수 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+html,
+body,
+div,
+span,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input,
+p {
+  margin: 0;
+  padding: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+* {
+  box-sizing: border-box;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+  font-family: "Pretendard-Regular, Apple SD Gothic Neo, Spoqa Han Sans, Noto Sans Korean, Apple Gothic, NanumBarunGothic, NanumGothic, Malgun Gothic, sans-serif";
+  color: "#4E4E4E";
+}
+button {
+  background: inherit;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  overflow: visible;
+  cursor: pointer;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+body {
+  margin: 0 auto;
+}

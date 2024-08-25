@@ -111,9 +111,9 @@ model AiComment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  aiBot   AiBot @relation(fields: [aiBotId], references: [id])
+  aiBot   AiBot @relation(fields: [aiBotId], references: [id], onDelete: Cascade)
   aiBotId Int
-  Post    Post  @relation(fields: [postId], references: [id])
+  Post    Post  @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId  Int
 
   @@index([aiBotId])

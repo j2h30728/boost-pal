@@ -1,7 +1,8 @@
 import { z } from "zod";
 
 import { PASSWORD_MIN_LENGTH, PASSWORD_REGEX, USERNAME_MIN_LENGTH } from "@/constants/validate";
-import { isEmailExists, isUsernameExists } from "./server/validate";
+import { checkEmailAvailability, isEmailExists, checkUsernameAvailability, isUsernameExists } from "./server/validate";
+import { isCategory } from "./utils";
 
 export const accountSchema = z
   .object({
@@ -75,5 +76,22 @@ export const logInSchema = z.object({
   }),
 });
 
+export const postSchema = z.object({
+  photo: z
+    .string({
+      required_error: "이미지는 필수 값입니다.",
+    })
+    .trim()
+    .min(1, "이미지는 빈 값이 될 수 없습니다."),
+  description: z
+    .string({
+      required_error: "자세한 설명은 필수 값입니다.",
+    })
+    .trim()
+    .min(1, "자세한 설명은 빈 값이 될 수 없습니다."),
+  category: z.string().refine(isCategory, "잘못된 주제선택입니다."),
+});
+
 export type CreateAccountType = z.infer<typeof accountSchema>;
 export type LogInType = z.infer<typeof logInSchema>;
+export type UploadPostType = z.infer<typeof postSchema>;

@@ -2,8 +2,10 @@ import Link from "next/link";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 
 import PostList from "@/components/post/post-list";
+import { getInitialPosts } from "@/service/postService";
 
-export default function Home() {
+export default async function Home() {
+  const posts = await getInitialPosts();
   return (
     <main className="flex flex-col gap-4">
       <div className="w-full h-96 bg-underline"></div>

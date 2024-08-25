@@ -72,7 +72,6 @@ enum Category {
 model Post {
   id          Int    @id @default(autoincrement())
   description String
-  title       String
   photo       String
   views       Int    @default(0)
 

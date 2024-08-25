@@ -1,6 +1,7 @@
 import { LIMIT_NUMBER } from "@/constants/posts";
 import db from "@/lib/server/db";
-import { Prisma } from "@prisma/client";
+import { Category, Prisma } from "@prisma/client";
+import { getMostPopularCategory } from "./categoryService";
 
 export async function getInitialPosts() {
   const posts = await db.post.findMany({
@@ -23,6 +24,42 @@ export async function getInitialPosts() {
       created_at: "desc",
     },
   });
-  return posts;
+  const cursorId = posts.at(-1)?.id || null;
+  return { items: posts, cursorId };
 }
 export type InitialPosts = Prisma.PromiseReturnType<typeof getInitialPosts>;
+
+export async function getPostsByCategory(category: Category) {
+  const posts = await db.post.findMany({
+    include: {
+      _count: {
+        select: {
+          comments: true,
+          likes: true,
+        },
+      },
+      user: true,
+      aiComments: {
+        include: {
+          aiBot: true,
+        },
+      },
+    },
+    take: 2,
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+  return posts;
+}
+
+export default async function getMostPopularCategoryPosts() {
+  const mostPopularCategory = await getMostPopularCategory();
+
+  if (!mostPopularCategory) {
+    throw new Error("어떤 카테고리에도 인증이 존재하지 않습니다.");
+  }
+  const posts = await getPostsByCategory(mostPopularCategory);
+
+  return posts;
+}

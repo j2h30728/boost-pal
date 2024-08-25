@@ -9,7 +9,7 @@ export default function InfinitePostList({
   initialPosts,
   initialCursorId,
 }: {
-  initialPosts: InitialPosts;
+  initialPosts: InitialPosts["items"];
   initialCursorId: number | null;
 }) {
   const {

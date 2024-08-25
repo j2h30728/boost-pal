@@ -24,9 +24,7 @@ export default async function ProfilePage({ params }: { params: { username: stri
         </p>
       </div>
       <StatusCard />
-      <div className="p-5 flex flex-col gap-5">
-        <PostList />
-      </div>
+      <div className="p-5 flex flex-col gap-5">{/* <PostList /> */}</div>
     </main>
   );
 }

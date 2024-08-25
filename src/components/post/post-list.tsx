@@ -1,10 +1,16 @@
+import { InitialPosts } from "@/service/postService";
 import ListPost from "./list-post";
 
-export default function PostList() {
+export default function PostList({ initialPosts }: { initialPosts: InitialPosts }) {
+  console.log(initialPosts.map((test) => test));
+
   return (
     <div className="flex flex-col gap-4">
-      {[1, 2].map((_, i) => (
-        <ListPost key={i} />
+      {initialPosts.map((post, i) => (
+        <>
+          <ListPost key={i} {...post} />
+          <div></div>
+        </>
       ))}
     </div>
   );

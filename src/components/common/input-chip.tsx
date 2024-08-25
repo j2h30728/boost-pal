@@ -8,12 +8,14 @@ const _Input = (
     name,
     value,
     type,
+    title,
     errorMessage,
     ...rest
   }: {
     name: string;
     value: string;
     type: HTMLInputTypeAttribute;
+    title: string;
     errorMessage?: string;
   } & InputHTMLAttributes<HTMLInputElement>,
   ref: ForwardedRef<HTMLInputElement>
@@ -35,7 +37,7 @@ const _Input = (
           disabled={pending}
           {...rest}
         />
-        {value}
+        {title}
       </label>
     </>
   );

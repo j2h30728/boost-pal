@@ -1,8 +1,7 @@
 import Link from "next/link";
 
-import Input from "@/components/common/input";
-import Button from "@/components/common/button";
-import { ROUTE_PATHS } from "@/constatns/routePath";
+import { ROUTE_PATHS } from "@/constants/routePath";
+import LogInForm from "@/components/user/log-in-form";
 
 export default function LogInPage() {
   return (
@@ -12,25 +11,7 @@ export default function LogInPage() {
         <span className="text-primary font-semibold">오늘을 기록</span>하고 싶다면?
       </h1>
       <div className=" self-end w-36 h-36 bg-gray-200"></div>
-      <form className="flex flex-col gap-3 ">
-        <Input
-          name="email"
-          type="email"
-          placeholder="이메일을 입력해주세요."
-          required={true}
-          errorMessage={""}
-          label="이메일"
-        />
-        <Input
-          name="password"
-          type="password"
-          placeholder="비밀번호를 입력해주세요."
-          required={true}
-          errorMessage={""}
-          label="비밀번호"
-        />
-        <Button text="로그인" />
-      </form>
+      <LogInForm />
       <p className="text-underline">
         아직 계정이 없으신가요? <Link href={ROUTE_PATHS.CREATE_ACCOUNT}>회원가입</Link>
       </p>

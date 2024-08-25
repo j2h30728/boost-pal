@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { ROUTE_PATHS } from "@/constatns/routePath";
+import { ROUTE_PATHS } from "@/constants/routePath";
 
 export default function LogInPage() {
   return (

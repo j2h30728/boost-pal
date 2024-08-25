@@ -30,5 +30,5 @@ export default function useUploadImage() {
     }
   };
 
-  return { handleImageChange, state: { previewImage, uploadUrl, imageFile } };
+  return { handleImageChange, setPreviewImage, state: { previewImage, uploadUrl, imageFile } };
 }

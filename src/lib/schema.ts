@@ -139,6 +139,7 @@ export const profileSchema = z
       .refine((value) => !value || value.length <= 200, {
         message: "소개글은 200글자 이하이어야 합니다.",
       }),
+    photo: z.string().optional(),
   })
   .superRefine(async ({ email }, ctx) => {
     const isEmailAvailable = await checkEmailAvailability(email);
@@ -168,3 +169,4 @@ export const profileSchema = z
 export type CreateAccountType = z.infer<typeof accountSchema>;
 export type LogInType = z.infer<typeof logInSchema>;
 export type UploadPostType = z.infer<typeof postSchema>;
+export type ProfileType = z.infer<typeof profileSchema>;

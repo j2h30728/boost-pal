@@ -18,7 +18,7 @@ export const getUserInfoBySession = async () => {
   }
   notFound();
 };
-export type InitialUserInformationType = Prisma.PromiseReturnType<typeof getUserInfoBySession>;
+export type InitialProfileType = Prisma.PromiseReturnType<typeof getUserInfoBySession>;
 
 export const getUserByEmail = async (email: string) => {
   const user = await db.user.findUnique({

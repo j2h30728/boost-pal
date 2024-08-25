@@ -10,7 +10,7 @@ export default function LogInPage() {
         <h1 className=" font-black text-[44px] ">이름 이름</h1>
       </div>
       <div className="w-full flex flex-col gap-3  items-center">
-        <Link className="w-full primary-button" href={ROUTE_PATHS.CREATE_ACCOUNT}>
+        <Link className="w-full primary-button" href={ROUTE_PATHS.LOG_IN}>
           이메일로 로그인
         </Link>
         <Link href={ROUTE_PATHS.CREATE_ACCOUNT} className="text-underline text-xs">

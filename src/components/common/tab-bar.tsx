@@ -2,7 +2,7 @@ import { ROUTE_PATHS } from "@/constants/routePath";
 import { HomeIcon, CalendarDaysIcon, UserIcon, Bars3BottomLeftIcon, PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
-export default function TabBar() {
+export default function TabBar({ username }: { username: string }) {
   return (
     <div className="*:text-neutral max-w-screen-sm w-full bg-white fixed bottom-0 flex justify-around border-t border-border py-2">
       <Link
@@ -22,7 +22,7 @@ export default function TabBar() {
         <CalendarDaysIcon className="w-6 h-6" />
         <span className="text-xs">캘린더</span>
       </Link>
-      <Link href={ROUTE_PATHS.PROFILE("1")} className="flex flex-col justify-center items-center">
+      <Link href={ROUTE_PATHS.PROFILE(username)} className="flex flex-col justify-center items-center">
         <UserIcon className="w-6 h-6" />
         <span className="text-xs">마이페이지</span>
       </Link>

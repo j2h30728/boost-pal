@@ -2,6 +2,8 @@ import { LIMIT_NUMBER } from "@/constants/posts";
 import db from "@/lib/server/db";
 import { Category, Prisma } from "@prisma/client";
 import { getMostPopularCategory } from "./categoryService";
+import { getSession } from "@/lib/server/session";
+import { startOfMonth } from "date-fns";
 
 export async function getInitialPosts() {
   const posts = await db.post.findMany({
@@ -62,4 +64,57 @@ export default async function getMostPopularCategoryPosts() {
   const posts = await getPostsByCategory(mostPopularCategory);
 
   return posts;
+}
+
+export async function getPostsByLoggedInUser() {
+  const session = await getSession();
+  const posts = await db.post.findMany({
+    where: {
+      userId: session.id,
+    },
+    include: {
+      _count: {
+        select: {
+          comments: true,
+          likes: true,
+        },
+      },
+      user: true,
+      aiComments: {
+        include: {
+          aiBot: true,
+        },
+      },
+    },
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+  return posts;
+}
+
+export async function getPostCountForThisMonth() {
+  const firstDayOfThisMonth = startOfMonth(new Date());
+
+  const postCount = await db.post.count({
+    where: {
+      created_at: {
+        gte: firstDayOfThisMonth,
+      },
+    },
+  });
+
+  return postCount;
+}
+
+export async function getPostCountByLoggedInUser() {
+  const session = await getSession();
+
+  const postCount = await db.post.count({
+    where: {
+      userId: session.id,
+    },
+  });
+
+  return postCount;
 }

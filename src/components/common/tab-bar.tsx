@@ -1,4 +1,4 @@
-import { ROUTE_PATHS } from "@/constatns/routePath";
+import { ROUTE_PATHS } from "@/constants/routePath";
 import { HomeIcon, CalendarDaysIcon, UserIcon, Bars3BottomLeftIcon, PlusIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 

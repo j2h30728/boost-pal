@@ -4,20 +4,21 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode } from "react";
 
-import { getRouteTile, ROUTE_PATHS } from "@/constatns/routePath";
 import { ChevronLeftIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { getRouteTile, ROUTE_PATHS } from "@/constants/routePath";
 
 export default function HeaderLayout({
   isBackButton = false,
+  isSearchButton = true,
   children,
 }: {
   isBackButton?: Boolean;
+  isSearchButton?: Boolean;
   children: ReactNode;
 }) {
   const pathname = usePathname();
   const router = useRouter();
   const displayHeader = getRouteTile(pathname).length !== 0;
-  console.log(getRouteTile(pathname).length, isBackButton);
 
   if (!displayHeader) return children;
 
@@ -30,9 +31,13 @@ export default function HeaderLayout({
           ) : null}
         </div>
         <h1 className="font-bold text-xl">{getRouteTile(pathname)}</h1>
-        <Link href={ROUTE_PATHS.SEARCH}>
-          <MagnifyingGlassIcon className="size-6 text-neutral" />
-        </Link>
+        <div className="size-6">
+          {isSearchButton ? (
+            <Link href={ROUTE_PATHS.SEARCH}>
+              <MagnifyingGlassIcon className="size-6 text-neutral" />
+            </Link>
+          ) : null}
+        </div>
       </div>
       <div className="pt-[60px] px-5">{children}</div>
     </>

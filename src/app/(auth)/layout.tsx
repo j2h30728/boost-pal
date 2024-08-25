@@ -7,7 +7,7 @@ export default async function RootLayout({
 }>) {
   return (
     <div className="relative">
-      <HeaderLayout>{children}</HeaderLayout>
+      <HeaderLayout isSearchButton={false}>{children}</HeaderLayout>
     </div>
   );
 }

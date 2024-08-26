@@ -1,3 +1,5 @@
+"use server";
+
 import { LIMIT_NUMBER } from "@/constants/posts";
 import db from "@/lib/server/db";
 import { Category, Prisma } from "@prisma/client";

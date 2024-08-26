@@ -19,18 +19,18 @@ export const checkEmailAvailability = async (email: string) => {
   const session = await getSession();
   const user = await getUserByEmail(email);
 
-  if (session.id === user?.id) return Boolean(user);
+  if (session.id === user?.id) return !Boolean(user);
 
-  return !Boolean(user);
+  return Boolean(user);
 };
 
 export const checkUsernameAvailability = async (username: string) => {
   const session = await getSession();
   const user = await getUserByUsername(username);
 
-  if (session.id === user?.id) return Boolean(user);
+  if (session.id === user?.id) return !Boolean(user);
 
-  return !Boolean(user);
+  return Boolean(user);
 };
 
 export const checkUserPassword = async (password: string) => {

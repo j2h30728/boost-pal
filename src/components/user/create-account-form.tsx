@@ -1,12 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, UseFormSetError } from "react-hook-form";
 
 import Input from "@/components/common/input";
 import Button from "@/components/common/button";
 import { accountSchema, CreateAccountType } from "@/lib/schema";
 import { handleCreateAccount } from "@/app/(auth)/create-account/actions";
+import { isUsernameExists, isEmailExists } from "@/lib/server/validate";
+import { createBlurValidation } from "@/lib/client/form-validate";
 
 export default function CreateAccount() {
   const {
@@ -15,9 +17,11 @@ export default function CreateAccount() {
     setError,
     formState: { errors },
   } = useForm<CreateAccountType>({
-    mode: "onChange",
     resolver: zodResolver(accountSchema),
   });
+
+  const onBlurUsername = createBlurValidation(isUsernameExists, setError, "username", "이미 존재하는 이름입니다.");
+  const onBlurEmail = createBlurValidation(isEmailExists, setError, "email", "이미 존재하는 이메일입니다.");
 
   const onSubmit = handleSubmit(async (data: CreateAccountType) => {
     const formData = new FormData();
@@ -41,7 +45,7 @@ export default function CreateAccount() {
         required={true}
         errorMessage={errors.username?.message}
         label="이름"
-        {...register("username")}
+        {...register("username", { onBlur: onBlurUsername })}
       />
       <Input
         type="email"
@@ -49,7 +53,7 @@ export default function CreateAccount() {
         required={true}
         errorMessage={errors.email?.message}
         label="이메일"
-        {...register("email")}
+        {...register("email", { onBlur: onBlurEmail })}
       />
       <Input
         type="password"

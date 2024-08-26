@@ -2,6 +2,7 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { UserIcon } from "@heroicons/react/24/solid";
 
 import Button from "../common/button";
 import Input from "../common/input";
@@ -11,7 +12,7 @@ import { InitialProfileType } from "@/service/userService";
 import { editProfile } from "@/app/(tab)/users/[username]/edit/actions";
 
 export default function ProfileEditForm({ initialUserInformation }: { initialUserInformation: InitialProfileType }) {
-  const { handleImageChange, setPreviewImage, state } = useUploadImage();
+  const { dispatch, state } = useUploadImage(`${initialUserInformation.avatar}/small` ?? "");
 
   const {
     register,
@@ -26,20 +27,21 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
       email: initialUserInformation.email ?? "",
       username: initialUserInformation.username,
       bio: initialUserInformation.bio ?? "",
-      photo: initialUserInformation.avatar ?? "",
+      photo: `${initialUserInformation.avatar}/small` ?? "",
     },
   });
 
   const onSubmit = handleSubmit(async (data: ProfileType) => {
-    if (!state.imageFile) return alert("파일이 없다!");
+    console.log(data);
     const cloudflareForm = new FormData();
-    cloudflareForm.append("file", state.imageFile);
-    const response = await fetch(state.uploadUrl, {
-      method: "post",
-      body: cloudflareForm,
-    });
-    if (response.status !== 200) return;
-
+    if (state.imageFile) {
+      cloudflareForm.append("file", state.imageFile);
+      const response = await fetch(state.uploadUrl, {
+        method: "post",
+        body: cloudflareForm,
+      });
+      if (response.status !== 200) return;
+    }
     const formData = new FormData();
     formData.append("email", data.email);
     formData.append("username", data.username);
@@ -56,14 +58,19 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
   };
   const onClickCancelAvatar = () => {
     setValue("photo", "");
-    setPreviewImage("");
+    dispatch.handleImageCancel();
   };
+
   return (
     <form action={onValid} className="flex flex-col gap-4">
       <div className="flex flex-col items-center">
         <div
           style={{ backgroundImage: `url(${state.previewImage ? state.previewImage : getValues("photo")})` }}
-          className={`size-20 rounded-full  bg-center bg-cover ${state.previewImage ? "" : "bg-underline"}`}></div>
+          className={`size-20 rounded-full bg-center bg-cover  ${
+            state.previewImage ? "" : "bg-none "
+          } border-2 border-red-500`}>
+          {!state.previewImage && <UserIcon className="size-20 text-underline" />}
+        </div>
         <div className="flex -mt-3">
           <label htmlFor="photo" className=" cursor-pointer primary-button w-20 text-xs rounded-3xl ">
             <span>이미지 수정</span>
@@ -76,7 +83,7 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
           </button>
         </div>
         <input
-          onChange={(e) => handleImageChange(e, setValue)}
+          onChange={(e) => dispatch.handleImageChange(e, setValue)}
           type="file"
           id="photo"
           name="photo"

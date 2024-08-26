@@ -1,8 +1,8 @@
 import { getUploadUrl } from "@/app/upload/actions";
 import { useState } from "react";
 
-export default function useUploadImage() {
-  const [previewImage, setPreviewImage] = useState("");
+export default function useUploadImage(initialImage?: string) {
+  const [previewImage, setPreviewImage] = useState(initialImage);
   const [uploadUrl, setUploadUrl] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
 
@@ -29,6 +29,13 @@ export default function useUploadImage() {
       setValueOfForm("photo", `https://imagedelivery.net/wLHa2XjZzk_8Ca42_eTQww/${id}`);
     }
   };
+  const handleImageCancel = () => {
+    console.log("1.Image canceled, state reset:", { previewImage, uploadUrl, imageFile });
 
-  return { handleImageChange, setPreviewImage, state: { previewImage, uploadUrl, imageFile } };
+    setUploadUrl("");
+    setImageFile(null);
+    setPreviewImage("");
+    console.log("2. Image canceled, state reset:", { previewImage, uploadUrl, imageFile });
+  };
+  return { dispatch: { handleImageChange, handleImageCancel }, state: { previewImage, uploadUrl, imageFile } };
 }

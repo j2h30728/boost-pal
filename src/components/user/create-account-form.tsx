@@ -60,7 +60,7 @@ export default function CreateAccount() {
         {...register("password")}
       />
       <Input
-        type="confirm_password"
+        type="password"
         placeholder="한 번 더 입력해주세요."
         required={true}
         errorMessage={errors.confirm_password?.message}

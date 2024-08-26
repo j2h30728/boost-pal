@@ -27,7 +27,7 @@ export async function handleCreateAccount(formData: FormData) {
     }
     return String(error);
   }
-  redirect("/users");
+  redirect("/");
 }
 
 const createAccount = async ({ username, email, password }: { username: string; email: string; password: string }) => {

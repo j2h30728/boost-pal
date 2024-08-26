@@ -12,7 +12,7 @@ export default async function RootLayout({
   return (
     <div className="relative pb-[40px]">
       <HeaderLayout>{children}</HeaderLayout>
-      <TabBar username={user.username} />
+      <TabBar username={encodeURI(user.username)} />
     </div>
   );
 }

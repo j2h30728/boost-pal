@@ -15,8 +15,8 @@ export default function UserDefaultImage({
   style?: string;
 }) {
   return (
-    <div className={`rounded-full relative` + style}>
-      {avatar !== null ? (
+    <div className={`relative` + style}>
+      {avatar ? (
         <Image
           src={`${avatar}/small`}
           className={`rounded-full aspect-square w-full`}
@@ -25,7 +25,7 @@ export default function UserDefaultImage({
           alt={username}
         />
       ) : (
-        <UserIcon width={width} height={height} className="bg-underline" />
+        <UserIcon width={width} height={height} className="rounded-full bg-underline" />
       )}
     </div>
   );

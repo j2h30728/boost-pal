@@ -30,12 +30,9 @@ export default function useUploadImage(initialImage?: string) {
     }
   };
   const handleImageCancel = () => {
-    console.log("1.Image canceled, state reset:", { previewImage, uploadUrl, imageFile });
-
     setUploadUrl("");
     setImageFile(null);
     setPreviewImage("");
-    console.log("2. Image canceled, state reset:", { previewImage, uploadUrl, imageFile });
   };
   return { dispatch: { handleImageChange, handleImageCancel }, state: { previewImage, uploadUrl, imageFile } };
 }

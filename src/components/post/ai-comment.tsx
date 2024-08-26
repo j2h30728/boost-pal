@@ -3,7 +3,7 @@
 import { supabase } from "@/lib/server/supabaseClient";
 
 import { useEffect, useState } from "react";
-import UserDefaultImage from "../user/user-default-image";
+import UserDefaultImage from "../common/user-default-image";
 import { AiComment } from "@prisma/client";
 
 interface InitialAiComment {
@@ -36,7 +36,6 @@ export default function AIComment({ postId }: { postId: number }) {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "AiComment", filter: `postId=eq.${postId}` },
         async (payload: { new: AiComment }) => {
-          console.log("Received payload:", payload);
           supabase.removeChannel(channel);
           const newAiComment = payload.new;
 

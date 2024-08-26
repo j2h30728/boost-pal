@@ -8,7 +8,7 @@ import DeleteButton from "@/components/common/delete-button";
 import AIComment from "@/components/post/ai-comment";
 import Comment from "@/components/post/comment";
 import LikeButton from "@/components/post/like-button";
-import UserDefaultImage from "@/components/user/user-default-image";
+import UserDefaultImage from "@/components/common/user-default-image";
 import { CATEGORIES } from "@/constants/cateogries";
 import { formatToTimeAgo } from "@/lib/client/utils";
 import { getSession } from "@/lib/server/session";

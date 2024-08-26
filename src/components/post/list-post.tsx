@@ -3,7 +3,7 @@ import Link from "next/link";
 import { PaginatedPosts } from "@/app/(tab)/posts/actions";
 import { CATEGORIES } from "@/constants/cateogries";
 import { formatToTimeAgo } from "@/lib/client/utils";
-import UserDefaultImage from "../user/user-default-image";
+import UserDefaultImage from "../common/user-default-image";
 
 type PostProps = PaginatedPosts["items"][number];
 

@@ -1,8 +1,7 @@
 import { z } from "zod";
 
 import { PASSWORD_MIN_LENGTH, PASSWORD_REGEX, USERNAME_MIN_LENGTH } from "@/constants/validate";
-import { checkEmailAvailability, checkUsernameAvailability } from "./server/validate";
-import { isCategory, debounce } from "./utils";
+import { isCategory } from "./utils";
 
 export const accountSchema = z
   .object({

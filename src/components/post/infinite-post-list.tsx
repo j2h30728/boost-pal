@@ -17,6 +17,9 @@ export default function InfinitePostList({
     isLoading,
     triggerRef,
   } = useInfiniteScroll({ initialItems: initialPosts, fetchMoreItems: getPaginatedPosts, initialCursorId });
+
+  if (posts.length === 0) return <div className="mx-auto py-10 text-xl text-base">인증글이 존재하지 않습니다.</div>;
+
   return (
     <div className="flex flex-col gap-4">
       {posts.map((post, i) => (

@@ -25,7 +25,7 @@ export default function UserDefaultImage({
           alt={username}
         />
       ) : (
-        <UserIcon width={width} height={height} />
+        <UserIcon width={width} height={height} className="bg-underline" />
       )}
     </div>
   );

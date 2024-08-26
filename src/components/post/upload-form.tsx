@@ -13,7 +13,7 @@ import useUploadImage from "@/hooks/useUploadImage";
 import { uploadPost } from "@/app/upload/actions";
 
 export default function UploadForm() {
-  const { handleImageChange, state } = useUploadImage();
+  const { dispatch, state } = useUploadImage();
 
   const {
     register,
@@ -61,7 +61,7 @@ export default function UploadForm() {
           ) : null}
         </label>
         <input
-          onChange={(e) => handleImageChange(e, setValue)}
+          onChange={(e) => dispatch.handleImageChange(e, setValue)}
           type="file"
           id="photo"
           name="photo"

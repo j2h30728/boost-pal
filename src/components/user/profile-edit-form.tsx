@@ -10,9 +10,14 @@ import useUploadImage from "@/hooks/useUploadImage";
 import { profileSchema, ProfileType } from "@/lib/schema";
 import { InitialProfileType } from "@/service/userService";
 import { editProfile } from "@/app/(tab)/users/[username]/edit/actions";
+import { createBlurValidation } from "@/lib/client/form-validate";
+import { checkEmailAvailability, checkUsernameAvailability } from "@/lib/server/validate";
+import { EMAIL_ERROR_MESSAGE, USERNAME_ERROR_MESSAGE } from "@/constants/messages";
 
 export default function ProfileEditForm({ initialUserInformation }: { initialUserInformation: InitialProfileType }) {
-  const { dispatch, state } = useUploadImage(`${initialUserInformation.avatar}/small` ?? "");
+  const { dispatch, state } = useUploadImage(
+    initialUserInformation.avatar ? `${initialUserInformation.avatar}/small` : ""
+  );
 
   const {
     register,
@@ -27,12 +32,13 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
       email: initialUserInformation.email ?? "",
       username: initialUserInformation.username,
       bio: initialUserInformation.bio ?? "",
-      photo: `${initialUserInformation.avatar}/small` ?? "",
+      photo: initialUserInformation.avatar ? `${initialUserInformation.avatar}/small` : "",
     },
   });
+  const onBlurUsername = createBlurValidation(checkEmailAvailability, setError, "username", USERNAME_ERROR_MESSAGE);
+  const onBlurEmail = createBlurValidation(checkUsernameAvailability, setError, "email", EMAIL_ERROR_MESSAGE);
 
   const onSubmit = handleSubmit(async (data: ProfileType) => {
-    console.log(data);
     const cloudflareForm = new FormData();
     if (state.imageFile) {
       cloudflareForm.append("file", state.imageFile);
@@ -50,7 +56,7 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
     formData.append("bio", data.bio ?? "");
     formData.append("photo", data.photo ?? "");
     const errors = await editProfile(formData);
-    setError("password", { message: errors?.fieldErrors.password?.at(0) });
+    setError("password", { message: errors?.toString() });
   });
 
   const onValid = async () => {
@@ -97,7 +103,7 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
         required
         placeholder="이름을 입력해주세요."
         errorMessage={errors.username?.message}
-        {...register("username")}
+        {...register("username", { onBlur: onBlurUsername })}
       />
       <Input
         label="이메일"
@@ -105,7 +111,7 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
         required
         placeholder="이메일을 입력해주세요."
         errorMessage={errors.email?.message}
-        {...register("email")}
+        {...register("email", { onBlur: onBlurEmail })}
       />
       <Input
         label="현재 비밀번호"

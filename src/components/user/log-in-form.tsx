@@ -22,6 +22,7 @@ export default function LogInForm() {
     const formData = new FormData();
     formData.append("email", data.email);
     formData.append("password", data.password);
+
     const errors = await handleLogIn(formData);
     setError("root", { message: errors?.toString() });
   });

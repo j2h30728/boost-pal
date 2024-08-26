@@ -6,6 +6,8 @@ import bcrypt from "bcrypt";
 import db from "@/lib/server/db";
 import { getSession } from "@/lib/server/session";
 import { accountSchema } from "@/lib/schema";
+import { isEmailExists, isUsernameExists } from "@/lib/server/validate";
+import { USER_INFO_ERROR_MESSAGE } from "@/constants/messages";
 
 export async function handleCreateAccount(formData: FormData) {
   const accountData = {
@@ -15,7 +17,13 @@ export async function handleCreateAccount(formData: FormData) {
     confirm_password: formData.get("confirm_password"),
   };
   try {
-    const result = await accountSchema.safeParseAsync(accountData);
+    const result = accountSchema.safeParse(accountData);
+
+    const checkUsername = await isUsernameExists(result.data?.username!);
+    const checkEmail = await isEmailExists(result.data?.email!);
+    if (checkUsername || checkEmail) {
+      throw new Error(USER_INFO_ERROR_MESSAGE);
+    }
 
     if (!result.success) {
       return result.error?.flatten();

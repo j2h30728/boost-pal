@@ -6,6 +6,7 @@ import bcrypt from "bcrypt";
 import db from "@/lib/server/db";
 import { logInSchema } from "@/lib/schema";
 import { getSession } from "@/lib/server/session";
+import { LOGIN_ERROR_MESSAGE } from "@/constants/messages";
 
 export async function handleLogIn(formData: FormData) {
   const loginData = {
@@ -13,15 +14,12 @@ export async function handleLogIn(formData: FormData) {
     email: formData.get("email"),
   };
   try {
-    const result = await logInSchema.spa(loginData);
+    const result = logInSchema.safeParse(loginData);
 
     if (!result.success) {
-      return {
-        data: null,
-        error: result.error?.flatten(),
-        success: false,
-      };
+      return result.error.flatten();
     }
+
     await logIn(result.data);
   } catch (error) {
     if (error instanceof Error) {
@@ -43,20 +41,14 @@ const logIn = async ({ email, password }: { email: string; password: string }) =
       password: true,
     },
   });
+  if (!user) {
+    throw new Error(LOGIN_ERROR_MESSAGE);
+  }
   const isValidPassword = await bcrypt.compare(password, user!.password ?? "소셜로그인");
   if (isValidPassword) {
-    const session = await getSession();
-    session.id = user!.id;
-    await session.save();
+    throw new Error(LOGIN_ERROR_MESSAGE);
   }
-  return {
-    data: null,
-    error: {
-      fieldErrors: {
-        password: ["비밀번호 확인 부탁드립니다."],
-        email: [],
-      },
-    },
-    success: false,
-  };
+  const session = await getSession();
+  session.id = user.id;
+  await session.save();
 };

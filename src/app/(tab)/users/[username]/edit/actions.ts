@@ -3,11 +3,12 @@
 import db from "@/lib/server/db";
 import { profileSchema } from "@/lib/schema";
 import { getSession } from "@/lib/server/session";
-import { checkUserPassword } from "@/lib/server/validate";
-import { getUserAuthInfo } from "@/service/userService";
+import { checkEmailAvailability, checkUsernameAvailability, checkUserPassword } from "@/lib/server/validate";
+import { getUserAuthInfo, getUserInfoBySession } from "@/service/userService";
 
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+import { PASSWORD_ERROR_MESSAGE, USER_INFO_ERROR_MESSAGE } from "@/constants/messages";
 
 export async function editProfile(formData: FormData) {
   const data = {
@@ -18,43 +19,56 @@ export async function editProfile(formData: FormData) {
     photo: formData.get("photo"),
     bio: formData.get("bio"),
   };
-  const result = await profileSchema.safeParseAsync(data);
+  const result = profileSchema.safeParse(data);
   if (!result.success) return result.error.flatten();
+  try {
+    const isValidPassword = await checkUserPassword(result.data.password);
+    if (!isValidPassword) {
+      throw new Error(PASSWORD_ERROR_MESSAGE);
+    }
+    const checkEmail = await checkEmailAvailability(result.data?.email!);
+    const checkUsername = await checkUsernameAvailability(result.data?.username!);
+    if (checkUsername || checkEmail) {
+      throw new Error(USER_INFO_ERROR_MESSAGE);
+    }
 
-  const isValidPassword = await checkUserPassword(result.data.password);
-  if (!isValidPassword) {
-    return { fieldErrors: { password: ["비밀번호를 확인해주세요."] } };
-  }
-  const session = await getSession();
+    const session = await getSession();
 
-  if (result.data && result.data.newPassword) {
-    const hashedNewPassword = await bcrypt.hash(result.data?.newPassword, 12);
-    const user = await db.user.update({
+    if (result.data && result.data.newPassword) {
+      const hashedNewPassword = await bcrypt.hash(result.data?.newPassword, 12);
+      await db.user.update({
+        where: {
+          id: session.id,
+        },
+        data: {
+          email: result.data?.email,
+          username: result.data?.username,
+          password: hashedNewPassword,
+          bio: result.data?.bio,
+          avatar: result.data.photo ?? "",
+        },
+      });
+    }
+    const loggedInUser = await getUserAuthInfo();
+    await db.user.update({
       where: {
         id: session.id,
       },
       data: {
         email: result.data?.email,
         username: result.data?.username,
-        password: hashedNewPassword,
+        password: loggedInUser?.password,
         bio: result.data?.bio,
         avatar: result.data.photo ?? "",
       },
     });
-    return redirect(`/users/${user.username}`);
+  } catch (error) {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return String(error);
   }
-  const loggedInUser = await getUserAuthInfo();
-  const user = await db.user.update({
-    where: {
-      id: session.id,
-    },
-    data: {
-      email: result.data?.email,
-      username: result.data?.username,
-      password: loggedInUser?.password,
-      bio: result.data?.bio,
-      avatar: result.data.photo ?? "",
-    },
-  });
-  return redirect(`/users/${user.username}`);
+
+  const user = await getUserInfoBySession();
+  redirect(`/users/${user.username}`);
 }

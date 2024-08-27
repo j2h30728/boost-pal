@@ -19,14 +19,7 @@ export default async function Home() {
           <span className="text-primary">응원</span>과 함께 오늘을 <span className="text-primary">기록</span>해보아요!
         </h2>
         <div className="w-full h-80 relative -z-10">
-          <Image
-            className="right-0 absolute w-auto h-full"
-            width={350}
-            height={400}
-            src="/images/main-image.png"
-            alt="main-image"
-            priority
-          />
+          <Image className="right-0 absolute" width={350} height={400} src="/images/main-image.webp" alt="main-image" />
         </div>
       </div>
       <div className="flex gap-2 pl-5 overflow-y-scroll">

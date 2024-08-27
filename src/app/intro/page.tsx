@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ROUTE_PATHS } from "@/constants/routePath";
 import Image from "next/image";
 
-import mainImage from "../../../public/images/main-image.png";
+import mainImage from "../../../public/images/main-image.webp";
 
 export default function IntroPage() {
   return (

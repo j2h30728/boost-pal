@@ -19,16 +19,23 @@ export default function ListPost({ id, description, created_at, category, user, 
       <div className="flex flex-col gap-3 items-center *:w-full">
         <div className="flex gap-3 justify-between items-center">
           <p className="multiline-ellipsis text-sm">{description}</p>
-          <UserDefaultImage avatar={user.avatar} username={user.username} width={44} height={44} />
+          <UserDefaultImage
+            style="min-w-[60px] border border-underline"
+            avatar={user.avatar}
+            username={user.username}
+            width={60}
+            height={60}
+          />
         </div>
         <div className="flex gap-3 justify-between items-center">
           <UserDefaultImage
+            style="min-w-[60px] border border-underline"
             avatar={aiComments[0]?.aiBot.avatar ?? null}
             username={user.username}
-            width={44}
-            height={44}
+            width={60}
+            height={60}
           />
-          <p className="multiline-ellipsis  text-sm text-[#9C8663]">{aiComments[0]?.text}</p>
+          <p className=" multiline-ellipsis text-sm text-[#9C8663]">{aiComments[0]?.text}</p>
         </div>
       </div>
     </Link>

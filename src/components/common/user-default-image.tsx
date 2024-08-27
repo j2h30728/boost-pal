@@ -15,7 +15,7 @@ export default function UserDefaultImage({
   style?: string;
 }) {
   return (
-    <div className={`relative` + style}>
+    <div className={`relative rounded-full ${style}`}>
       {avatar ? (
         <Image
           src={`${avatar}/small`}

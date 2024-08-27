@@ -20,7 +20,7 @@ export default async function Home() {
         </h2>
         <div className="w-full h-80 relative -z-10">
           <Image
-            className="right-0 absolute"
+            className="right-0 absolute w-auto h-full"
             width={350}
             height={400}
             src="/images/main-image.png"

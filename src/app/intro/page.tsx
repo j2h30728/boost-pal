@@ -5,12 +5,12 @@ import Image from "next/image";
 
 import mainImage from "../../../public/images/main-image.png";
 
-export default function LogInPage() {
+export default function IntroPage() {
   return (
     <main className="h-screen flex flex-col gap-5 px-5 items-center justify-around">
       <div className="w-full flex flex-col items-center justify-between relative">
         <div className="w-72 h-96 relative">
-          <Image priority src="/images/main-image.png" width={288} height={384} alt="main-image" />
+          <Image priority className="w-auto h-full" src={mainImage} width={288} height={384} alt="main-image" />
         </div>
         <h1 className=" font-black flex gap-2 text-[44px] absolute -translate-y-1/2 top-1/2">
           <p className="first-letter:text-primary">BOOST</p>

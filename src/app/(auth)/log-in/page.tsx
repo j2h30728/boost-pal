@@ -4,6 +4,8 @@ import Image from "next/image";
 import { ROUTE_PATHS } from "@/constants/routePath";
 import LogInForm from "@/components/user/log-in-form";
 
+import subImage from "../../../../public/images/sub-image.png";
+
 export default function LogInPage() {
   return (
     <main className="flex flex-col gap-5">
@@ -13,7 +15,7 @@ export default function LogInPage() {
           <span className="text-primary font-semibold">오늘을 기록</span>하고 싶다면?
         </h1>
         <div className=" self-end w-48 h-52 relative overflow-clip">
-          <Image width={192} height={208} src="/images/sub-image.png" alt="sub-image" />
+          <Image className="w-auto h-full" width={192} height={208} priority src={subImage} alt="sub-image" />
         </div>
       </div>
       <div className="flex flex-col">

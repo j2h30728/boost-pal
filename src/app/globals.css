@@ -30,6 +30,10 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .skeleton {
+    @apply bg-underline animate-pulse rounded-xl;
+  }
 }
 html,
 body,

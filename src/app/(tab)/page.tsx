@@ -32,11 +32,11 @@ export default async function Home() {
       </div>
       <div className="px-5 flex flex-col gap-5 ">
         <div className="flex flex-col gap-2 *:bg-white">
-          <p className="font-semibold text-xs pl-2 w-fit p-1 rounded-xl">제일 인증수가 많은 주제에 함께 하세요!</p>
+          <p className="font-semibold text-sm pl-2 w-fit p-1 rounded-xl">제일 인증수가 많은 주제에 함께 하세요!</p>
           <div className="flex justify-between px-2">
-            <h3 className="font-extrabold text-md pb-2">최근 다미가 응원한 {CATEGORIES[category]} 인증</h3>
+            <h3 className="font-extrabold text-xl pb-2">최근 다미가 응원한 {CATEGORIES[category]} 인증</h3>
             {/* #TODO 카테고리당 post list 페이지 생성 후 수정 필요 */}
-            <Link href={`/posts`} className="text-base flex items-center text-xs">
+            <Link href={`/posts`} className="text-base flex items-center text-sm">
               <span>더보기</span> <ChevronRightIcon className="w-4 h-3" />
             </Link>
           </div>
@@ -44,8 +44,8 @@ export default async function Home() {
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex justify-between px-2">
-            <h3 className="font-extrabold text-md">최근 다미가 응원한 인증</h3>
-            <Link href={"/posts/exercise"} className="text-base flex items-center text-xs">
+            <h3 className="font-extrabold text-xl">최근 다미가 응원한 인증</h3>
+            <Link href={"/posts/exercise"} className="text-base flex items-center text-sm">
               <span>더보기</span> <ChevronRightIcon className="w-4 h-3" />
             </Link>
           </div>

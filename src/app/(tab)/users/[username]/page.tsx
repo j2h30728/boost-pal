@@ -16,9 +16,9 @@ export default async function ProfilePage({ params }: { params: { username: stri
         <div className="p-5 flex items-center gap-3 ">
           <div className="flex gap-5 items-center">
             <UserDefaultImage
-              style="size-[44px]"
-              width={44}
-              height={44}
+              style="size-[65px]"
+              width={65}
+              height={65}
               username={loggedInUser.username}
               avatar={loggedInUser.avatar}
             />

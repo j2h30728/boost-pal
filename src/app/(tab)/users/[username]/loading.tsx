@@ -1,7 +1,7 @@
 import PostListSkeletonUI from "@/components/skeleton-ui/post-list-skeleton";
 import StatusCardSkeletonUI from "@/components/skeleton-ui/status-card-skeleton";
 
-export default async function HomeLoading() {
+export default async function ProfileLoading() {
   return (
     <main className="flex flex-col gap-5">
       <div className="flex flex-col">

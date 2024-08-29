@@ -12,6 +12,7 @@
     "@heroicons/react": "^2.1.5",
     "@hookform/resolvers": "^3.9.0",
     "@supabase/supabase-js": "^2.45.2",
+    "aws-sdk": "^2.1685.0",
     "bcrypt": "^5.1.1",
     "date-fns": "^3.6.0",
     "iron-session": "^8.0.3",

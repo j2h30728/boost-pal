@@ -30,11 +30,16 @@ const createContent = (description: string, imageUrl: string | null) => {
   return baseContent;
 };
 const callOpenAi = async (messages: Message[]) => {
-  const response = await openai.chat.completions.create({
-    model: GPT_MODEL,
-    messages: messages,
-  });
-  return response.choices[0].message;
+  try {
+    const response = await openai.chat.completions.create({
+      model: GPT_MODEL,
+      messages: messages,
+    });
+    return response.choices[0].message;
+  } catch (error) {
+    console.error("OpenAI API Error:", error);
+    throw new Error("Failed to call OpenAI API");
+  }
 };
 
 export default async function postOpenAI({ description, imageUrl }: { description: string; imageUrl: string | null }) {

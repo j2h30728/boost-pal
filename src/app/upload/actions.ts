@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { getSession } from "@/lib/server/session";
 import db from "@/lib/server/db";
 import { postSchema } from "@/lib/schema";
-import postOpenAI from "@/service/aiService";
+import { sendAiCommentToSQS } from "@/service/aiCommentService";
 
 export async function uploadPost(formData: FormData) {
   const data = {
@@ -32,21 +32,11 @@ export async function uploadPost(formData: FormData) {
         category: result.data.category,
       },
     });
-    setImmediate(async () => {
-      const aiMessage = await postOpenAI({
-        description: result.data.description,
-        imageUrl: result.data.photo ? `${result.data.photo}/public` : null,
-      });
-
-      if (aiMessage.content) {
-        await db.aiComment.create({
-          data: {
-            text: aiMessage.content,
-            postId: post.id,
-            aiBotId: 1,
-          },
-        });
-      }
+    sendAiCommentToSQS({
+      postId: post.id,
+      userId: post.userId,
+      imageUrl: post.photo ? `${post.photo}/middle` : "",
+      description: post.description,
     });
     redirect(`/posts/${post.id}`);
   }

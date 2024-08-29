@@ -44,8 +44,9 @@ const logIn = async ({ email, password }: { email: string; password: string }) =
   if (!user) {
     throw new Error(LOGIN_ERROR_MESSAGE);
   }
-  const isValidPassword = await bcrypt.compare(password, user!.password ?? "소셜로그인");
-  if (isValidPassword) {
+
+  const isValidPassword = await bcrypt.compare(password, user.password!);
+  if (!isValidPassword) {
     throw new Error(LOGIN_ERROR_MESSAGE);
   }
   const session = await getSession();

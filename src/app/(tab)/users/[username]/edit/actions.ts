@@ -9,6 +9,7 @@ import { getUserAuthInfo, getUserInfoBySession } from "@/service/userService";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
 import { PASSWORD_ERROR_MESSAGE, USER_INFO_ERROR_MESSAGE } from "@/constants/messages";
+import { revalidateTag } from "next/cache";
 
 export async function editProfile(formData: FormData) {
   const data = {
@@ -68,7 +69,7 @@ export async function editProfile(formData: FormData) {
     }
     return String(error);
   }
-
+  revalidateTag("user-profile");
   const user = await getUserInfoBySession();
   redirect(`/users/${user.username}`);
 }

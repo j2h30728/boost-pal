@@ -1,12 +1,13 @@
 "use server";
 
 import { revalidatePath, revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
 
-import { commentSchema } from "@/lib/schema";
 import db from "@/lib/server/db";
+import { commentSchema } from "@/lib/schema";
 import { getSession } from "@/lib/server/session";
 import { ROUTE_PATHS } from "@/constants/routePath";
-import { redirect } from "next/navigation";
+import { cacheTags } from "@/lib/cacheTags";
 
 export const likePost = async (postId: number) => {
   const session = await getSession();
@@ -17,7 +18,7 @@ export const likePost = async (postId: number) => {
         postId,
       },
     });
-    revalidateTag(`like-status-${postId}`);
+    revalidateTag(cacheTags.postLike(postId));
   } catch (error) {}
 };
 
@@ -29,7 +30,7 @@ export const dislikePost = async (postId: number) => {
         id: { userId: session.id!, postId },
       },
     });
-    revalidateTag(`like-status-${postId}`);
+    revalidateTag(cacheTags.postLike(postId));
   } catch (error) {}
 };
 
@@ -37,7 +38,7 @@ export const addPostComment = async (formData: FormData) => {
   const text = formData.get("text");
   const postId = formData.get("postId");
   const result = commentSchema.safeParse(text);
-
+  const formatPostId = Number(postId);
   if (!result.success) {
     return result.error.flatten();
   }
@@ -47,13 +48,13 @@ export const addPostComment = async (formData: FormData) => {
       await db.comment.create({
         data: {
           userId: session.id,
-          postId: Number(postId),
+          postId: formatPostId,
           text: result.data,
         },
       });
     }
   } catch (error) {}
-  revalidateTag(`post-comments-${postId}`);
+  revalidateTag(cacheTags.postComment(formatPostId));
 };
 export const deleteComment = async (commentId: number, postId: number) => {
   const session = await getSession();
@@ -67,7 +68,7 @@ export const deleteComment = async (commentId: number, postId: number) => {
       });
     }
   } catch (error) {}
-  revalidateTag(`post-comments-${postId}`);
+  revalidateTag(cacheTags.postComment(postId));
 };
 
 export const deletePost = async (formData: FormData) => {

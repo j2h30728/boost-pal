@@ -1,15 +1,16 @@
 "use server";
 
+import { revalidateTag } from "next/cache";
+import bcrypt from "bcrypt";
+import { redirect } from "next/navigation";
+
 import db from "@/lib/server/db";
 import { profileSchema } from "@/lib/schema";
 import { getSession } from "@/lib/server/session";
 import { checkEmailAvailability, checkUsernameAvailability, checkUserPassword } from "@/lib/server/validate";
 import { getUserAuthInfo, getUserInfoBySession } from "@/service/userService";
-
-import bcrypt from "bcrypt";
-import { redirect } from "next/navigation";
 import { PASSWORD_ERROR_MESSAGE, USER_INFO_ERROR_MESSAGE } from "@/constants/messages";
-import { revalidateTag } from "next/cache";
+import { cacheTags } from "@/lib/cacheTags";
 
 export async function editProfile(formData: FormData) {
   const data = {
@@ -69,7 +70,7 @@ export async function editProfile(formData: FormData) {
     }
     return String(error);
   }
-  revalidateTag("user-profile");
+  revalidateTag(cacheTags.profile);
   const user = await getUserInfoBySession();
   redirect(`/users/${user.username}`);
 }

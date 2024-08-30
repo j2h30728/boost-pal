@@ -2,6 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Prisma } from "@prisma/client";
 import { unstable_cache } from "next/cache";
+import { EyeIcon } from "@heroicons/react/24/solid";
 
 import db from "@/lib/server/db";
 import DeleteButton from "@/components/common/delete-button";
@@ -13,8 +14,8 @@ import { CATEGORIES } from "@/constants/cateogries";
 import { formatToTimeAgo } from "@/lib/client/utils";
 import { getSession } from "@/lib/server/session";
 import { getUserInfoBySession } from "@/service/userService";
-import { EyeIcon } from "@heroicons/react/24/solid";
 import { deletePost } from "./actions";
+import { cacheTags } from "@/lib/cacheTags";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const product = await getPost(Number(params.id));
@@ -92,7 +93,7 @@ export type InitialComments = Prisma.PromiseReturnType<typeof getInitialComments
 
 function getCachedPostDetail(postId: number) {
   const cachedPostDetail = unstable_cache(getPost, ["post-detail"], {
-    tags: [`post-detail-${postId}`, `user-profile`],
+    tags: cacheTags.postDetail(postId),
   });
   return cachedPostDetail(postId);
 }
@@ -100,7 +101,7 @@ function getCachedPostDetail(postId: number) {
 async function getCachedLikeStatus(postId: number) {
   const session = await getSession();
   const cachedLikeStatus = unstable_cache(getLikeStatus, ["post-like-status"], {
-    tags: [`like-status-${postId}`],
+    tags: [cacheTags.postLike(postId)],
   });
   return cachedLikeStatus(postId, session.id!);
 }
@@ -108,7 +109,7 @@ async function getCachedLikeStatus(postId: number) {
 async function getCachedComments(postId: number) {
   const session = await getSession();
   const cachedComments = unstable_cache(getInitialComments, ["post-comments"], {
-    tags: [`post-comments-${postId}`],
+    tags: [cacheTags.postComment(postId)],
   });
   return cachedComments(postId, session.id!);
 }

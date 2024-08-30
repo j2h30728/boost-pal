@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 import { commentSchema } from "@/lib/schema";
 import db from "@/lib/server/db";
@@ -82,5 +82,6 @@ export const deletePost = async (formData: FormData) => {
       },
     });
   }
+  revalidatePath(`/posts/${postId}`);
   redirect(ROUTE_PATHS.POSTS);
 };

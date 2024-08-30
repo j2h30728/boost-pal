@@ -92,7 +92,7 @@ export type InitialComments = Prisma.PromiseReturnType<typeof getInitialComments
 
 function getCachedPostDetail(postId: number) {
   const cachedPostDetail = unstable_cache(getPost, ["post-detail"], {
-    tags: [`like-detail-${postId}`],
+    tags: [`post-detail-${postId}`, `user-profile`],
   });
   return cachedPostDetail(postId);
 }

@@ -35,6 +35,9 @@ export type InitialPosts = Prisma.PromiseReturnType<typeof getInitialPosts>;
 
 export async function getPostsByCategory(category: Category) {
   const posts = await db.post.findMany({
+    where: {
+      category,
+    },
     include: {
       _count: {
         select: {

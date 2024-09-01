@@ -71,8 +71,8 @@ export default function AIComment({ postId }: { postId: number }) {
   return (
     <div className="flex justify-between gap-5">
       <p className="text-secondary-1">{aiComment.text}</p>
-      <div className="flex flex-col items-center">
-        <UserDefaultImage username={aiBotName} avatar={aiBotAvatar} />
+      <div className="flex flex-col items-center min-w-12 gap-2">
+        <UserDefaultImage username={aiBotName} avatar={aiBotAvatar} width={44} height={44} />
         <span>{aiBotName}</span>
       </div>
     </div>

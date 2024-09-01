@@ -9,32 +9,12 @@
   font-style: normal;
 }
 
-@layer base {
-  a {
-    @apply text-primary;
-  }
+html,
+body {
+  font-family: "Pretendard-Regular, Apple SD Gothic Neo, Spoqa Han Sans, Noto Sans Korean, Apple Gothic, NanumBarunGothic, NanumGothic, Malgun Gothic, sans-serif";
+  color: #4e4e4e;
 }
-@layer components {
-  .primary-button {
-    @apply bg-primary text-white font-semibold text-[16px] rounded-[13px] py-3 flex justify-center items-center hover:bg-primary-2 active:bg-primary-1;
-  }
 
-  .chip {
-    @apply w-fit border border-primary text-primary rounded-[100px] flex justify-center items-center;
-  }
-
-  .multiline-ellipsis {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2; /* 원하는 줄 수 */
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .skeleton {
-    @apply bg-underline animate-pulse rounded-xl;
-  }
-}
 html,
 body,
 div,
@@ -60,8 +40,12 @@ p {
   &::-webkit-scrollbar {
     display: none; /* Chrome, Safari, Opera */
   }
-  font-family: "Pretendard-Regular, Apple SD Gothic Neo, Spoqa Han Sans, Noto Sans Korean, Apple Gothic, NanumBarunGothic, NanumGothic, Malgun Gothic, sans-serif";
-  color: "#4E4E4E";
+}
+input,
+button,
+textarea,
+select {
+  -webkit-appearance: none;
 }
 button {
   background: inherit;
@@ -78,4 +62,31 @@ a {
 }
 body {
   margin: 0 auto;
+}
+
+@layer base {
+  a {
+    @apply text-primary;
+  }
+}
+@layer components {
+  .primary-button {
+    @apply bg-primary text-white font-semibold text-[16px] rounded-[13px] py-3 flex justify-center items-center hover:bg-primary-2 active:bg-primary-1;
+  }
+
+  .chip {
+    @apply w-fit border border-primary text-primary rounded-[100px] flex justify-center items-center;
+  }
+
+  .multiline-ellipsis {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2; /* 원하는 줄 수 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .skeleton {
+    @apply bg-underline animate-pulse rounded-xl;
+  }
 }

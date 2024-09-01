@@ -22,14 +22,14 @@ const _Textarea = (
 
   return (
     <div className="flex flex-col gap-1">
-      <label htmlFor={name} className="text-sm font-bold mb-2">
+      <label htmlFor={name} className="text-md font-bold mb-2">
         {label}
       </label>
       <div className="flex">
         <textarea
           ref={ref}
           id={name}
-          className="w-full h-[130px] p-3 border rounded-[10px] border-underline placeholder:text-underline text-md "
+          className="w-full h-[125px] p-3 border rounded-[10px] border-underline placeholder:text-underline text-md "
           name={name}
           placeholder={placeholder}
           disabled={pending}

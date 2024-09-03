@@ -25,7 +25,7 @@ const config: Config = {
         md: "16px",
       },
       boxShadow: {
-        custom: "4.72px 6.3px 22.03px 0px #00000040",
+        custom: "4px 5px 18px 0px #00000020",
       },
     },
   },

@@ -3,7 +3,7 @@ import StatusCardSkeletonUI from "@/components/skeleton-ui/status-card-skeleton"
 
 export default async function ProfileLoading() {
   return (
-    <main className="flex flex-col gap-5">
+    <main className="flex flex-col gap-1">
       <div className="flex flex-col">
         <div className="p-5 flex items-center gap-5">
           <div className="size-[65px] skeleton rounded-full "></div>

@@ -23,7 +23,10 @@ interface CalendarContextType {
       selectDate: (date: string) => void;
     };
   };
-  posts: GroupPostsByDateType;
+  posts: {
+    data: GroupPostsByDateType;
+    isLoading: boolean;
+  };
 }
 
 export const CalendarContext = createContext<CalendarContextType | null>(null);

@@ -28,14 +28,19 @@ const CalendarBody = () => {
             <div
               onClick={savePostDate?.date === date.date ? () => selectedDate.selectDate(date.date) : () => {}}
               key={date.date}
-              className={`flex flex-col justify-center items-center cursor-pointer size-10
+              className={`flex flex-col justify-center items-center size-10
                 ${currentDate.month !== date.month ? "invisible" : "visible"}
                 ${
                   isToday(+date.year, +date.month, +date.day)
                     ? "min-w-8 min-h-8 bg-secondary bg-opacity-30 rounded-full"
                     : ""
                 }
-                ${savePostDate?.date === date.date ? "min-w-8 min-h-8 bg-primary bg-opacity-30 rounded-full" : ""}
+                ${
+                  savePostDate?.date === date.date
+                    ? "min-w-8 min-h-8 bg-primary bg-opacity-30 rounded-full cursor-pointer "
+                    : ""
+                }
+                ${selectedDate.date === date.date ? "ring-2 ring-primary-2 ring-offset-4" : ""}
                 `}>
               {date.day}
               {isToday(+date.year, +date.month, +date.day) && <small className="text-base text-xs">오늘</small>}

@@ -17,8 +17,8 @@ export default function CalendarContent({ post }: { post: Post }) {
           <div className="chip text-[11px] w-10">{CATEGORIES[post.category]}</div>
           <p className="truncate w-56 text-sm">{post.description}</p>
         </div>
-        <Link href={`/posts/${post.id}`} className="ml-auto">
-          <ChevronRightIcon className="size-4" />
+        <Link href={`/posts/${post.id}`} className="ml-auto p-5">
+          <ChevronRightIcon className="size-5" />
         </Link>
       </div>
     </div>

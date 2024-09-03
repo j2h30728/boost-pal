@@ -4,7 +4,9 @@ import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import useCalendarContext from "./useCalendarContext";
 
 const CalendarHeader = () => {
-  const { dispatch, currentDate } = useCalendarContext();
+  const {
+    calendar: { dispatch, currentDate },
+  } = useCalendarContext();
 
   return (
     <div className="flex justify-around">
@@ -21,7 +23,7 @@ const CalendarHeader = () => {
         <button onClick={dispatch.handlePrevMonth}>
           <ChevronLeftIcon className="size-5 text-primary" />
         </button>
-        <span>{currentDate.month}</span>
+        <span>{currentDate.month.padStart(2, "0")}</span>
         <button onClick={dispatch.handleNextMonth}>
           <ChevronRightIcon className="size-5 text-primary" />
         </button>

@@ -141,7 +141,7 @@ export default async function DetailPost({ params }: { params: { id: string } })
         {isAuthor ? <DeleteButton isAuthor={isAuthor} id={post.id} onDelete={deletePost} /> : null}
       </div>
       <div className="relative w-4/5 aspect-square max-h-96 mx-auto ">
-        <Image className="object-cover" priority fill src={`${post.photo}/public`} alt={post.description} />
+        <Image className="object-contain" priority fill src={`${post.photo}/public`} alt={post.description} />
       </div>
       <div className="p-5 flex flex-col gap-6">
         <p>{post.description}</p>

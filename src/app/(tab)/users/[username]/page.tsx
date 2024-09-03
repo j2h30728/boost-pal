@@ -11,7 +11,7 @@ export default async function ProfilePage({ params }: { params: { username: stri
   const loggedInUser = await getUserInfoBySession();
   const posts = await getPostsByLoggedInUser();
   return (
-    <main className="flex flex-col gap-5">
+    <main className="flex flex-col gap-1">
       <div className="flex flex-col">
         <div className="p-5 flex items-center gap-3 ">
           <div className="flex gap-5 items-center">
@@ -40,7 +40,7 @@ export default async function ProfilePage({ params }: { params: { username: stri
         <p className="px-8">{loggedInUser.bio}</p>
       </div>
       <StatusCard />
-      <div className="p-5 flex flex-col gap-5">
+      <div className="flex flex-col gap-5">
         <PostList initialPosts={posts} />
       </div>
     </main>

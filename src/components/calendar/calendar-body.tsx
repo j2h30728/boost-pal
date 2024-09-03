@@ -6,14 +6,14 @@ import useCalendarContext from "./useCalendarContext";
 const CalendarBody = () => {
   const {
     calendar: { daysInMonth, selectedDate, currentDate },
-    posts,
+    posts: { data },
   } = useCalendarContext();
   const today = new Date();
   const isToday = (year: number, month: number, date: number) =>
     today.getFullYear() === year && today.getDate() === date && today.getMonth() + 1 === month;
 
   return (
-    <div className="flex flex-col gap-4 bg-white p-1 rounded-2xl min-w-72">
+    <div className="flex flex-col gap-4 bg-white p-2 rounded-2xl min-w-72">
       <div className="grid grid-cols-7 gap-4">
         {WEEKS.map((week, index) => (
           <div className={`flex justify-center size-10 text-gray-700"`} key={week}>
@@ -23,7 +23,7 @@ const CalendarBody = () => {
       </div>
       <div className="grid grid-cols-7 gap-4">
         {daysInMonth.map((date) => {
-          const savePostDate = posts.find((post) => post.date === date.date);
+          const savePostDate = data.find((post) => post.date === date.date);
           return (
             <div
               onClick={savePostDate?.date === date.date ? () => selectedDate.selectDate(date.date) : () => {}}

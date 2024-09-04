@@ -123,3 +123,34 @@ export async function getPostCountByLoggedInUser() {
 
   return postCount;
 }
+
+export async function getPostById(id: number) {
+  return db.post.findUnique({ where: { id } });
+}
+
+export async function getPostWithUpdateView(id: number) {
+  const post = await db.post.update({
+    where: {
+      id,
+    },
+    data: {
+      views: {
+        increment: 1,
+      },
+    },
+    include: {
+      _count: {
+        select: {
+          comments: true,
+        },
+      },
+      user: {
+        select: {
+          username: true,
+          avatar: true,
+        },
+      },
+    },
+  });
+  return post;
+}

@@ -1,98 +1,34 @@
 import { notFound } from "next/navigation";
-import { Prisma } from "@prisma/client";
 import { unstable_cache } from "next/cache";
 import { EyeIcon } from "@heroicons/react/24/solid";
 
-import db from "@/lib/server/db";
+import { CATEGORIES } from "@/constants/cateogries";
+import { cacheTags } from "@/lib/cacheTags";
+
+import { deletePost } from "./actions";
+import { getSession } from "@/lib/server/session";
+import { getUserInfoBySession } from "@/service/userService";
+import { getPostById, getPostWithUpdateView } from "@/service/postService";
+import { getInitialComments } from "@/service/commentService";
+import { getLikeStatus } from "@/service/likeService";
+
+import { formatToTimeAgo } from "@/lib/client/utils";
 import DeleteButton from "@/components/common/delete-button";
 import AIComment from "@/components/post/ai-comment";
 import Comment from "@/components/post/comment";
 import LikeButton from "@/components/post/like-button";
 import UserDefaultImage from "@/components/common/user-default-image";
-import { CATEGORIES } from "@/constants/cateogries";
-import { formatToTimeAgo } from "@/lib/client/utils";
-import { getSession } from "@/lib/server/session";
-import { getUserInfoBySession } from "@/service/userService";
-import { deletePost } from "./actions";
-import { cacheTags } from "@/lib/cacheTags";
 import DetailImage from "@/components/post/detail-image";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
-  const product = await getPost(Number(params.id));
+  const product = await getPostById(Number(params.id));
   return {
     title: product?.description.slice(0, 10),
   };
 }
 
-async function getPost(id: number) {
-  const post = await db.post.update({
-    where: {
-      id,
-    },
-    data: {
-      views: {
-        increment: 1,
-      },
-    },
-    include: {
-      _count: {
-        select: {
-          comments: true,
-        },
-      },
-      user: {
-        select: {
-          username: true,
-          avatar: true,
-        },
-      },
-    },
-  });
-  return post;
-}
-async function getLikeStatus(postId: number, userId: number) {
-  const like = await db.like.findUnique({
-    where: {
-      id: {
-        userId,
-        postId,
-      },
-    },
-  });
-  const likeCount = await db.like.count({
-    where: {
-      postId,
-    },
-  });
-  return {
-    isLiked: Boolean(like),
-    likeCount,
-  };
-}
-
-async function getInitialComments(postId: number, userId: number) {
-  const comments = await db.comment.findMany({
-    where: {
-      postId,
-    },
-    select: {
-      id: true,
-      text: true,
-      created_at: true,
-      user: {
-        select: {
-          id: true,
-          username: true,
-        },
-      },
-    },
-  });
-  return comments.map((comment) => ({ ...comment, isAuthor: comment.user.id === userId }));
-}
-export type InitialComments = Prisma.PromiseReturnType<typeof getInitialComments>;
-
 function getCachedPostDetail(postId: number) {
-  const cachedPostDetail = unstable_cache(getPost, ["post-detail"], {
+  const cachedPostDetail = unstable_cache(getPostWithUpdateView, ["post-detail"], {
     tags: cacheTags.postDetail(postId),
   });
   return cachedPostDetail(postId);
@@ -122,11 +58,15 @@ async function getIsAuthor(userId: number) {
 }
 export default async function DetailPost({ params }: { params: { id: string } }) {
   const id = Number(params.id);
+
   if (isNaN(id)) return notFound();
+
   const loggedInUser = await getUserInfoBySession();
   const post = await getCachedPostDetail(id);
   const comments = await getCachedComments(id);
+
   if (!post) return notFound();
+
   const isAuthor = await getIsAuthor(post.userId);
   const { isLiked, likeCount } = await getCachedLikeStatus(id);
 

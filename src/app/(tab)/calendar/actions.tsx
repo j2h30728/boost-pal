@@ -1,12 +1,16 @@
 "use server";
 
+import { endOfMonth, startOfMonth } from "date-fns";
+
 import db from "@/lib/server/db";
 import { getSession } from "@/lib/server/session";
 import { groupPostsByDate } from "@/lib/utils";
 
 export const getWrittenPostByYearnAndMonth = async (year: number, month: number) => {
-  const startDateOfMonth = new Date(year, month - 1, 1);
-  const endDateOfMonth = new Date(year, month, 0);
+  const date = new Date(year, month - 1);
+  const startDateOfMonth = startOfMonth(date);
+  const endDateOfMonth = endOfMonth(date);
+
   const session = await getSession();
   const posts = await db.post.findMany({
     where: {

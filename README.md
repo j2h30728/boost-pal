@@ -4,7 +4,7 @@
 
 <div align="center">
 
-## [BOOST PAL 바로가기](https://cheer-dam.vercel.app/)
+## [BOOST PAL 바로가기](https://boostpal.vercel.app/)
 
 > BOOST PAL은 기록에 대한 **따뜻한 응원과 위로의 메시지를 전달하는 서비스**입니다.
 >
@@ -112,23 +112,23 @@
 **이슈** : 사용자가 기록을 적성을 제출하면, 기록을 분석하여 ai comment 수신 및 ai 코멘트 등록 지연시간이 발생합니다.
 사용자 경험을 보완하기위해 기록이 등록되면 바로 라우팅 시키되 ai 코멘트 생성 로직은 비동기적으로 작업합니다.
 
-#### [개발 환경](https://github.com/j2h30728/cheer-dam/pull/9)
+#### [개발 환경](https://github.com/j2h30728/boost-pal/pull/9)
 
 - 개발 단계에서는 open ai 메시지 요청 및 ai 코멘트 추가 로직을 setImmediate 함수를 사용하여 비동기 작업으로 등록했습니다.
 - **문제점** : 하지만, 서버리스 환경에서의 배포를 진행했기 때문에 배포 환경에서는 setImmediate는 서버리스 함수의 timeout내에 결과를 반환하지 못하여 강제 종료 되었습니다.
 
-#### [배포 환경](https://github.com/j2h30728/cheer-dam/pull/27)
+#### [배포 환경](https://github.com/j2h30728/boost-pal/pull/27)
 
 - **해결** : 어느 환경에서나 동일하게 로직을 완료하기 위해, 비동기 로직을 AWS SQS + AWS Lambda로 옮겼습니다.
 
-### [AI 코멘트 렌더링 작업](https://github.com/j2h30728/cheer-dam/pull/11)
+### [AI 코멘트 렌더링 작업](https://github.com/j2h30728/boost-pal/pull/11)
 
 - 비동기로 등록되는 ai 코멘트는 등록여부 확인은 웹소켓 기반으로 서비스되는 supabase realtime을 사용합니다.
 - 특정 테이블(ai comment)를 구독하다가 ai 코멘트가 등록되면 사용자에게 보여줍니다.
 
 <img src='./docs/troubleshooting.png'>
 
-### [Next.js 캐싱](https://github.com/j2h30728/cheer-dam/pull/29)
+### [Next.js 캐싱](https://github.com/j2h30728/boost-pal/pull/29)
 
 - **이슈** : Next.js의 `unstable_cache`로 인하여 삭제한 데이터가 계속적으로 렌더링 되는 이슈가 있었습니다.
 - **해걸** : `revalidateTag`, `revalidatePath`를 사용하여 더욱 섬세하게 재검증을 진행하여 캐싱을 관리하였습니다. 또한, 편의성을 위하여 사용하는 캐시태그를 한 곳에 모아 관리하는 방법을 채택하였습니다.
@@ -142,7 +142,7 @@
 1. 프로젝트 클론
 
 ```javascript
-$ git clone https://github.com/j2h30728/cheer-dam.git
+$ git clone https://github.com/j2h30728/boost-pal.git
 ```
 
 2. 필수 도구 설치 (Install dependencies)

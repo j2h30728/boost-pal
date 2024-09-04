@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Prisma } from "@prisma/client";
 import { unstable_cache } from "next/cache";
@@ -16,7 +15,6 @@ import { getSession } from "@/lib/server/session";
 import { getUserInfoBySession } from "@/service/userService";
 import { deletePost } from "./actions";
 import { cacheTags } from "@/lib/cacheTags";
-import { useState } from "react";
 import DetailImage from "@/components/post/detail-image";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {

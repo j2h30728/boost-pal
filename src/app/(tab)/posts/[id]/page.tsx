@@ -16,6 +16,8 @@ import { getSession } from "@/lib/server/session";
 import { getUserInfoBySession } from "@/service/userService";
 import { deletePost } from "./actions";
 import { cacheTags } from "@/lib/cacheTags";
+import { useState } from "react";
+import DetailImage from "@/components/post/detail-image";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
   const product = await getPost(Number(params.id));
@@ -140,9 +142,7 @@ export default async function DetailPost({ params }: { params: { id: string } })
         <span className="chip w-10 h-4 text-xs">{CATEGORIES[post.category]}</span>
         {isAuthor ? <DeleteButton isAuthor={isAuthor} id={post.id} onDelete={deletePost} /> : null}
       </div>
-      <div className="relative w-4/5 aspect-square max-h-96 mx-auto ">
-        <Image className="object-contain" priority fill src={`${post.photo}/public`} alt={post.description} />
-      </div>
+      <DetailImage src={post.photo} alt={post.description} />
       <div className="p-5 flex flex-col gap-6">
         <p>{post.description}</p>
         <div className="flex gap-5 items-start justify-between">

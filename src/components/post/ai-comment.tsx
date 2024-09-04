@@ -64,7 +64,11 @@ export default function AIComment({ postId }: { postId: number }) {
   }, [postId]);
 
   if (aiComment === null) {
-    return <div>Loading</div>;
+    return (
+      <div className="animate-bounce mx-auto text-md font-medium text-secondary-1">
+        동물 친구에게 응원의 메시지를 받아오고 있어요.
+      </div>
+    );
   }
   const aiBotName = Array.isArray(aiComment.AiBot) ? aiComment.AiBot[0].name : aiComment.AiBot.name;
   const aiBotAvatar = Array.isArray(aiComment.AiBot) ? aiComment.AiBot[0].avatar : aiComment.AiBot.avatar;

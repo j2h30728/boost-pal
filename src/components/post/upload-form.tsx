@@ -50,7 +50,7 @@ export default function UploadForm() {
         <label
           htmlFor="photo"
           style={{ backgroundImage: `url(${state.previewImage})` }}
-          className=" border-2 border-primary w-full aspect-[5/3] mx-auto flex items-center justify-center flex-col text-primary rounded-[16px] border-dashed cursor-pointer bg-center bg-contain ">
+          className=" border-2 border-primary w-full aspect-[5/3] mx-auto flex items-center justify-center flex-col text-primary rounded-[16px] border-dashed cursor-pointer bg-center bg-contain bg-no-repeat">
           {!state.previewImage ? (
             <div className="flex flex-col gap-2 items-center">
               <div className="flex items-center justify-center w-10 h-10 bg-sub-border rounded-full">

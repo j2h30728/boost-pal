@@ -4,7 +4,7 @@ import { useOptimistic } from "react";
 import { ChatBubbleBottomCenterTextIcon } from "@heroicons/react/24/solid";
 
 import { addPostComment, deleteComment } from "@/app/(tab)/posts/[id]/actions";
-import { InitialComments } from "@/app/(tab)/posts/[id]/page";
+import { InitialComments } from "@/service/commentService";
 import { commentSchema } from "@/lib/schema";
 import DeleteButton from "../common/delete-button";
 

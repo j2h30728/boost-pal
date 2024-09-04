@@ -8,7 +8,6 @@ export default function PostCalendar() {
       <div className="shadow-xl rounded-xl p-4">
         <Calendar.Header />
         <Calendar.Body />
-        <Calendar.Footer />
       </div>
       <Calendar.Contents />
     </Calendar>

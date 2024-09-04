@@ -5,7 +5,7 @@ import db from "@/lib/server/db";
 import { Category, Prisma } from "@prisma/client";
 import { getMostPopularCategory } from "./categoryService";
 import { getSession } from "@/lib/server/session";
-import { startOfMonth } from "date-fns";
+import { endOfMonth, startOfMonth } from "date-fns";
 
 export async function getInitialPosts() {
   const posts = await db.post.findMany({
@@ -99,16 +99,20 @@ export async function getPostsByLoggedInUser() {
 }
 
 export async function getPostCountForThisMonth() {
-  const firstDayOfThisMonth = startOfMonth(new Date());
+  const date = new Date();
+  const startDateOfMonth = startOfMonth(date);
+  const endDateOfMonth = endOfMonth(date);
+  const session = await getSession();
 
   const postCount = await db.post.count({
     where: {
+      userId: session.id!,
       created_at: {
-        gte: firstDayOfThisMonth,
+        gte: startDateOfMonth,
+        lt: endDateOfMonth,
       },
     },
   });
-
   return postCount;
 }
 

@@ -10,6 +10,8 @@ import { CATEGORIES } from "@/constants/cateogries";
 import TabBar from "@/components/common/tab-bar";
 import { getUserInfoBySession } from "@/service/userService";
 
+import mainImage from "../../public/images/main-image.webp";
+
 export default async function Home() {
   const mostPopularCategoryPosts = await getMostPopularCategoryPosts();
   const category = await getMostPopularCategory();
@@ -23,7 +25,14 @@ export default async function Home() {
           <span className="text-primary">응원</span>과 함께 오늘을 <span className="text-primary">기록</span>해보아요!
         </h2>
         <div className="w-full h-80 relative -z-10">
-          <Image className="right-0 absolute" width={350} height={400} src="/images/main-image.webp" alt="main-image" />
+          <Image
+            priority
+            className="right-0 absolute w-auto"
+            width={350}
+            height={400}
+            src={mainImage}
+            alt="main-image"
+          />
         </div>
       </div>
       <div className="flex gap-2 pl-5 overflow-y-scroll">
@@ -36,12 +45,14 @@ export default async function Home() {
       </div>
       <div className="px-5 flex flex-col gap-5 ">
         {category && (
-          <div className="flex flex-col gap-2 *:bg-white">
-            <p className="font-semibold text-xs pl-2 w-fit p-1 rounded-xl">제일 인증수가 많은 주제에 함께 하세요!</p>
-            <div className="flex justify-between px-2">
-              <h3 className="font-extrabold text-md pb-2">최근 다미가 응원한 {CATEGORIES[category]} 인증</h3>
+          <div className="flex flex-col gap-2">
+            <p className="font-semibold text-xs pl-2 w-fit p-1 rounded-xl bg-white">
+              제일 인증수가 많은 주제에 함께 하세요!
+            </p>
+            <div className="flex justify-between pr-2 *:bg-white *:rounded-xl">
+              <h3 className="font-extrabold text-md mb-2 px-2">최근 다미가 응원한 {CATEGORIES[category]} 인증</h3>
               {/* #TODO 카테고리당 post list 페이지 생성 후 수정 필요 */}
-              <Link href={`/posts`} className="text-base flex items-center text-xs">
+              <Link href={`/posts`} className="text-base flex items-center text-xs px-2">
                 <span>더보기</span> <ChevronRightIcon className="w-4 h-3" />
               </Link>
             </div>

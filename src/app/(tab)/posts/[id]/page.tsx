@@ -11,6 +11,7 @@ import { getUserInfoBySession } from "@/service/userService";
 import { getPostById, getPostWithUpdateView } from "@/service/postService";
 import { getInitialComments } from "@/service/commentService";
 import { getLikeStatus } from "@/service/likeService";
+import { fetchInitialComment } from "@/service/aiCommentService";
 
 import { formatToTimeAgo } from "@/lib/client/utils";
 import DeleteButton from "@/components/common/delete-button";
@@ -69,7 +70,7 @@ export default async function DetailPost({ params }: { params: { id: string } })
 
   const isAuthor = await getIsAuthor(post.userId);
   const { isLiked, likeCount } = await getCachedLikeStatus(id);
-
+  const aiComment = await fetchInitialComment(post.id);
   return (
     <div className="w-full">
       <div className="p-5 flex items-center gap-3">
@@ -93,7 +94,7 @@ export default async function DetailPost({ params }: { params: { id: string } })
           </div>
           <span className="text-underline">{formatToTimeAgo(post.created_at.toString())}</span>
         </div>
-        <AIComment postId={post.id} />
+        <AIComment postId={post.id} initialAiComment={aiComment} />
         <Comment initialComments={comments} postId={post.id} loggedInUsername={loggedInUser.username} />
       </div>
     </div>

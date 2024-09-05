@@ -24,7 +24,7 @@ export default function AIComment({
   useEffect(() => {
     let channel: RealtimeChannel | null = null;
 
-    if (!initialAiComment) {
+    if (initialAiComment === null) {
       channel = supabase
         .channel("ai-comment")
         .on(

@@ -40,7 +40,7 @@ export const fetchInitialComment: (postId: number) => Promise<InitialAiComment |
       },
     },
   });
-  if (!post?.aiComments) {
+  if (post === null) {
     return null;
   }
 
@@ -49,5 +49,5 @@ export const fetchInitialComment: (postId: number) => Promise<InitialAiComment |
     AiBot: { name: comment.aiBot.name, avatar: comment.aiBot.avatar! },
   }));
 
-  return aiComment[0];
+  return aiComment[0] ?? null;
 };

@@ -15,7 +15,7 @@ export default function DetailImage({ src, alt }: { src: string; alt: string }) 
         fill
         src={`${src}/public`}
         alt={alt}
-        onLoadingComplete={(e) => {
+        onLoad={(e) => {
           setIsImageLoaded(true);
         }}
       />

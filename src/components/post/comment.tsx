@@ -7,6 +7,7 @@ import { addPostComment, deleteComment } from "@/app/(tab)/posts/[id]/actions";
 import { InitialComments } from "@/service/commentService";
 import { commentSchema } from "@/lib/schema";
 import DeleteButton from "../common/delete-button";
+import { formatToTimeAgo } from "@/lib/client/utils";
 
 type CommentOptimisticValue =
   | {
@@ -84,7 +85,7 @@ export default function Comments({
               <span className="items-center"> {comment.text}</span>
               <div className="ml-auto flex flex-col min-w-10 gap-1">
                 <DeleteButton onDelete={handleDeleteComment} id={comment.id} isAuthor={comment.isAuthor} />
-                <span className=" text-underline text-xs">10일 전</span>
+                <span className=" text-underline text-xs">{formatToTimeAgo(comment.created_at.toString())}</span>
               </div>
             </div>
           </div>

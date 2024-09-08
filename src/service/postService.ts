@@ -1,14 +1,18 @@
 "use server";
 
-import { LIMIT_NUMBER } from "@/constants/posts";
-import db from "@/lib/server/db";
-import { Category, Prisma } from "@prisma/client";
-import { getMostPopularCategory } from "./categoryService";
-import { getSession } from "@/lib/server/session";
 import { endOfMonth, startOfMonth } from "date-fns";
+import { Category, Prisma } from "@prisma/client";
 
-export async function getInitialPosts() {
+import db from "@/lib/server/db";
+import { getSession } from "@/lib/server/session";
+import { LIMIT_NUMBER } from "@/constants/posts";
+import { getMostPopularCategory } from "./categoryService";
+
+export async function getInitialPosts(category?: Category) {
   const posts = await db.post.findMany({
+    where: {
+      category,
+    },
     include: {
       _count: {
         select: {
@@ -32,6 +36,43 @@ export async function getInitialPosts() {
   return { items: posts, cursorId };
 }
 export type InitialPosts = Prisma.PromiseReturnType<typeof getInitialPosts>;
+
+export async function getPaginatedPosts(cursorId: number | null, option?: { category: Category }) {
+  const posts = await db.post.findMany({
+    where: {
+      category: option?.category,
+    },
+    include: {
+      _count: {
+        select: {
+          comments: true,
+          likes: true,
+        },
+      },
+      user: true,
+      aiComments: {
+        include: {
+          aiBot: true,
+        },
+      },
+    },
+    skip: cursorId ? 1 : 0,
+    take: LIMIT_NUMBER + 1,
+    cursor: cursorId ? { id: cursorId } : undefined,
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+  const hasMore = posts.length > LIMIT_NUMBER;
+  if (hasMore) {
+    posts.pop();
+  }
+  const isLastPage = !hasMore;
+  const nextCursorId = posts.at(-1)?.id ?? null;
+  return { items: posts, isLastPage, nextCursorId };
+}
+
+export type PaginatedPosts = Prisma.PromiseReturnType<typeof getPaginatedPosts>;
 
 export async function getPostsByCategory(category: Category) {
   const posts = await db.post.findMany({

@@ -1,43 +1,54 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+
+type FetchMoreItems<T> = (
+  cursorId: number | null,
+  option?: any
+) => Promise<{
+  items: T[];
+  nextCursorId: number | null;
+  isLastPage: boolean;
+}>;
 
 interface UseInfiniteScrollOptions<T> {
   initialItems: T[];
-  fetchMoreItems: (
-    cursorId: number | null
-  ) => Promise<{ items: T[]; nextCursorId: number | null; isLastPage: boolean }>;
+  fetchMoreItems: FetchMoreItems<T>;
+  fetchOption?: Record<string, any>;
   initialCursorId?: number | null;
 }
 
-function useInfiniteScroll<T>({ initialItems, fetchMoreItems, initialCursorId = null }: UseInfiniteScrollOptions<T>) {
+function useInfiniteScroll<T>({
+  initialItems,
+  fetchMoreItems,
+  fetchOption,
+  initialCursorId = null,
+}: UseInfiniteScrollOptions<T>) {
   const [items, setItems] = useState<T[]>(initialItems);
   const [cursorId, setCursorId] = useState<number | null>(initialCursorId);
   const [isLastPage, setIsLastPage] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const triggerRef = useRef<HTMLDivElement>(null);
 
+  const loadMoreItems = useCallback(async () => {
+    if (isLoading || isLastPage) return;
+    setIsLoading(true);
+    try {
+      const { items: newItems, nextCursorId, isLastPage: newIsLastPage } = await fetchMoreItems(cursorId, fetchOption);
+      setItems((prev) => [...prev, ...newItems]);
+      setCursorId(nextCursorId);
+      setIsLastPage(newIsLastPage);
+    } catch (error) {
+      console.error("Error fetching more items:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [cursorId, fetchMoreItems, isLastPage, isLoading, fetchOption]);
+
   useEffect(() => {
     const observer = new IntersectionObserver(
-      async (entries, observer) => {
+      async (entries) => {
         const element = entries[0];
-        if (element.isIntersecting && triggerRef.current && !isLoading && !isLastPage) {
-          observer.unobserve(triggerRef.current);
-          setIsLoading(true);
-
-          try {
-            const { items: newItems, nextCursorId, isLastPage: newIsLastPage } = await fetchMoreItems(cursorId);
-
-            setItems((prev) => [...prev, ...newItems]);
-            setCursorId(nextCursorId);
-            setIsLastPage(newIsLastPage);
-
-            if (nextCursorId && !newIsLastPage && triggerRef.current) {
-              observer.observe(triggerRef.current);
-            }
-          } catch (error) {
-            console.error("Error fetching more items:", error);
-          } finally {
-            setIsLoading(false);
-          }
+        if (element.isIntersecting) {
+          loadMoreItems();
         }
       },
       {
@@ -45,14 +56,17 @@ function useInfiniteScroll<T>({ initialItems, fetchMoreItems, initialCursorId = 
       }
     );
 
-    if (triggerRef.current && !isLastPage && !isLoading) {
-      observer.observe(triggerRef.current);
+    const currentTrigger = triggerRef.current;
+    if (currentTrigger && !isLastPage) {
+      observer.observe(currentTrigger);
     }
 
     return () => {
-      observer.disconnect();
+      if (currentTrigger) {
+        observer.unobserve(currentTrigger);
+      }
     };
-  }, [cursorId, isLastPage]);
+  }, [isLastPage, loadMoreItems]);
 
   return { items, isLoading, isLastPage, triggerRef };
 }

@@ -1,22 +1,30 @@
 "use client";
 
-import { InitialPosts } from "@/service/postService";
+import { getPaginatedPosts, InitialPosts } from "@/service/postService";
+import { CATEGORIES } from "@/constants/cateogries";
+
 import ListPost from "./list-post";
-import { getPaginatedPosts } from "@/app/(tab)/posts/actions";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
 
 export default function InfinitePostList({
   initialPosts,
   initialCursorId,
+  category,
 }: {
   initialPosts: InitialPosts["items"];
   initialCursorId: number | null;
+  category?: keyof typeof CATEGORIES;
 }) {
   const {
     items: posts,
     isLoading,
     triggerRef,
-  } = useInfiniteScroll({ initialItems: initialPosts, fetchMoreItems: getPaginatedPosts, initialCursorId });
+  } = useInfiniteScroll({
+    initialItems: initialPosts,
+    fetchMoreItems: getPaginatedPosts,
+    fetchOption: { category },
+    initialCursorId,
+  });
 
   if (posts.length === 0) return <div className="mx-auto py-10 text-xl text-base">인증글이 존재하지 않습니다.</div>;
 

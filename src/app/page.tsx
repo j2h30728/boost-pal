@@ -6,7 +6,7 @@ import PostList from "@/components/post/post-list";
 import getMostPopularCategoryPosts, { getInitialPosts } from "@/service/postService";
 import InfinitePostList from "@/components/post/infinite-post-list";
 import { getMostPopularCategory } from "@/service/categoryService";
-import { CATEGORIES, makeCategoryPath } from "@/constants/cateogries";
+import { CATEGORIES, makeCategoryPath } from "@/constants/categories";
 import TabBar from "@/components/common/tab-bar";
 import { getUserInfoBySession } from "@/service/userService";
 

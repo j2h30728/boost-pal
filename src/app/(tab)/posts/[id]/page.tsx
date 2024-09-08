@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import { EyeIcon } from "@heroicons/react/24/solid";
 
-import { CATEGORIES } from "@/constants/cateogries";
+import { CATEGORIES } from "@/constants/categories";
 import { cacheTags } from "@/lib/cacheTags";
 
 import { deletePost } from "./actions";

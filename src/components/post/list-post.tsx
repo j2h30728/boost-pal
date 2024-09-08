@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { CATEGORIES } from "@/constants/cateogries";
+import { CATEGORIES } from "@/constants/categories";
 import { formatToTimeAgo } from "@/lib/client/utils";
 import UserDefaultImage from "../common/user-default-image";
 import { PaginatedPosts } from "@/service/postService";

@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 
 import { getInitialPosts } from "@/service/postService";
 
-import { CATEGORIES } from "@/constants/cateogries";
+import { CATEGORIES } from "@/constants/categories";
 import { isCategory } from "@/lib/utils";
 import InfinitePostList from "@/components/post/infinite-post-list";
 

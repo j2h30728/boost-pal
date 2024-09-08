@@ -8,7 +8,7 @@ import Button from "@/components/common/button";
 import Textarea from "@/components/common/textarea";
 import InputChip from "@/components/common/input-chip";
 import { postSchema, UploadPostType } from "@/lib/schema";
-import { CATEGORIES } from "@/constants/cateogries";
+import { CATEGORIES } from "@/constants/categories";
 import useUploadImage from "@/hooks/useUploadImage";
 import { uploadPost } from "@/app/upload/actions";
 

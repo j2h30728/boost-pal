@@ -3,7 +3,7 @@ import { Post } from "@prisma/client";
 import Link from "next/link";
 
 import { WEEKS } from "@/constants/calendar";
-import { CATEGORIES } from "@/constants/cateogries";
+import { CATEGORIES } from "@/constants/categories";
 
 export default function CalendarContent({ post }: { post: Post }) {
   return (

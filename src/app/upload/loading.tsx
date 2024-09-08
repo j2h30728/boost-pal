@@ -1,4 +1,4 @@
-import { CATEGORIES } from "@/constants/cateogries";
+import { CATEGORIES } from "@/constants/categories";
 
 export default function UploadLoading() {
   return (

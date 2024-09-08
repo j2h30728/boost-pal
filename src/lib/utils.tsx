@@ -1,6 +1,6 @@
 import { Category, Post } from "@prisma/client";
 
-import { CATEGORIES } from "@/constants/cateogries";
+import { CATEGORIES } from "@/constants/categories";
 import { format } from "date-fns";
 
 export const isCategory = (category: string): category is Category => {

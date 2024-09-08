@@ -1,7 +1,7 @@
 "use client";
 
 import { getPaginatedPosts, InitialPosts } from "@/service/postService";
-import { CATEGORIES } from "@/constants/cateogries";
+import { CATEGORIES } from "@/constants/categories";
 
 import ListPost from "./list-post";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";

@@ -1,9 +1,9 @@
 import Link from "next/link";
 
-import { PaginatedPosts } from "@/app/(tab)/posts/actions";
 import { CATEGORIES } from "@/constants/cateogries";
 import { formatToTimeAgo } from "@/lib/client/utils";
 import UserDefaultImage from "../common/user-default-image";
+import { PaginatedPosts } from "@/service/postService";
 
 type PostProps = PaginatedPosts["items"][number];
 

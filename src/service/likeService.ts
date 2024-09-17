@@ -1,20 +1,19 @@
 import { withErrorHandling } from "@/lib/error/withErrorHandling";
 import db from "@/lib/server/db";
 
-export const getLikeStatus = (postId: number, userId: number) =>
-  withErrorHandling(async () => {
-    const like = await db.like.findUnique({
-      where: {
-        id: {
-          userId,
-          postId,
-        },
-      },
-    });
-    const likeCount = await db.like.count({
-      where: {
+export const getLikeStatus = withErrorHandling(async (postId: number, userId: number) => {
+  const like = await db.like.findUnique({
+    where: {
+      id: {
+        userId,
         postId,
       },
-    });
-    return { isLiked: Boolean(like), likeCount };
+    },
   });
+  const likeCount = await db.like.count({
+    where: {
+      postId,
+    },
+  });
+  return { isLiked: Boolean(like), likeCount };
+});

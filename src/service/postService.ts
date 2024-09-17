@@ -22,88 +22,72 @@ export interface CursorPagination {
   nextCursorId: number | null;
   isLastPage: boolean;
 }
-export async function getInitialPosts(category?: Category): Promise<ServerResponse<CursorPagination>> {
-  try {
-    const posts = await db.post.findMany({
-      where: {
-        category,
-      },
-      include: {
-        _count: {
-          select: {
-            comments: true,
-            likes: true,
-          },
-        },
-        user: true,
-        aiComments: {
-          include: {
-            aiBot: true,
-          },
+export const getInitialPosts = withErrorHandling(async (category?: Category) => {
+  const posts = await db.post.findMany({
+    where: {
+      category,
+    },
+    include: {
+      _count: {
+        select: {
+          comments: true,
+          likes: true,
         },
       },
-      take: LIMIT_NUMBER,
-      orderBy: {
-        created_at: "desc",
+      user: true,
+      aiComments: {
+        include: {
+          aiBot: true,
+        },
       },
-    });
-    if (!posts) {
-      throw new NotFoundError();
-    }
-    const nextCursorId = posts.at(-1)?.id || null;
-    return {
-      data: { items: posts, nextCursorId, isLastPage: nextCursorId === null },
-      isSuccess: true,
-      message: "",
-      error: null,
-    };
-  } catch (error) {
-    return generateErrorResponse(error);
+    },
+    take: LIMIT_NUMBER,
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+  if (!posts) {
+    throw new NotFoundError();
   }
-}
+  const nextCursorId = posts.at(-1)?.id || null;
+  return { items: posts, nextCursorId, isLastPage: nextCursorId === null };
+});
 export type InitialPosts = Prisma.PromiseReturnType<typeof getInitialPosts>;
 
-export const getPaginatedPosts = async (
-  cursorId: number | null,
-  option?: { category: Category }
-): Promise<ServerResponse<CursorPagination>> => {
-  try {
-    const posts = await db.post.findMany({
-      where: {
-        category: option?.category,
-      },
-      include: {
-        _count: {
-          select: {
-            comments: true,
-            likes: true,
-          },
-        },
-        user: true,
-        aiComments: {
-          include: {
-            aiBot: true,
-          },
+export const getPaginatedPosts = withErrorHandling(async (cursorId: number | null, option?: { category: Category }) => {
+  const posts = await db.post.findMany({
+    where: {
+      category: option?.category,
+    },
+    include: {
+      _count: {
+        select: {
+          comments: true,
+          likes: true,
         },
       },
-      skip: cursorId ? 1 : 0,
-      take: LIMIT_NUMBER + 1,
-      cursor: cursorId ? { id: cursorId } : undefined,
-      orderBy: {
-        created_at: "desc",
+      user: true,
+      aiComments: {
+        include: {
+          aiBot: true,
+        },
       },
-    });
-    const hasMore = posts.length > LIMIT_NUMBER;
-    if (hasMore) {
-      posts.pop();
-    }
-    const isLastPage = !hasMore;
-    const nextCursorId = posts.at(-1)?.id ?? null;
-    return { data: { items: posts, nextCursorId, isLastPage }, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
+    },
+    skip: cursorId ? 1 : 0,
+    take: LIMIT_NUMBER + 1,
+    cursor: cursorId ? { id: cursorId } : undefined,
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+  const hasMore = posts.length > LIMIT_NUMBER;
+  if (hasMore) {
+    posts.pop();
   }
-};
+  const isLastPage = !hasMore;
+  const nextCursorId = posts.at(-1)?.id ?? null;
+  return { items: posts, nextCursorId, isLastPage };
+});
 
 export type PaginatedPosts = Prisma.PromiseReturnType<typeof getPaginatedPosts>;
 
@@ -138,145 +122,132 @@ export const getPostsByCategory = async (category: Category): Promise<ServerResp
   }
 };
 
-export const getMostPopularCategoryPosts = async (): Promise<ServerResponse<ListOfPost[]>> => {
-  try {
-    const { data: category, isSuccess: categorySuccess, error } = await getMostPopularCategory();
-    if (!categorySuccess) {
-      throw error;
-    }
-
-    if (!category) {
-      return {
-        data: [],
-        isSuccess: true,
-        message: "인증 기록이 존재하지 않아 인기 주제가 없습니다.",
-        error: null,
-      };
-    }
-    return getPostsByCategory(category);
-  } catch (error) {
-    return generateErrorResponse(error);
+export const getMostPopularCategoryPosts = withErrorHandling(async () => {
+  const { data: category, isSuccess: categorySuccess, error } = await getMostPopularCategory();
+  if (!categorySuccess) {
+    throw error;
   }
-};
 
-export const getPostsByLoggedInUser = async (): Promise<ServerResponse<ListOfPost[]>> => {
-  try {
-    const sessionId = await getSessionId();
-    const posts = await db.post.findMany({
-      where: {
-        userId: sessionId,
-      },
-      include: {
-        _count: {
-          select: {
-            comments: true,
-            likes: true,
-          },
-        },
-        user: true,
-        aiComments: {
-          include: {
-            aiBot: true,
-          },
-        },
-      },
-      orderBy: {
-        created_at: "desc",
-      },
-    });
-    return { data: posts, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
+  if (!category) {
+    return {
+      data: [],
+      isSuccess: true,
+      message: "인증 기록이 존재하지 않아 인기 주제가 없습니다.",
+      error: null,
+    };
   }
-};
+  return getPostsByCategory(category);
+});
 
-export const getPostsCountForThisMonth = () =>
-  withErrorHandling(async () => {
-    const date = new Date();
-    const startDateOfMonth = startOfMonth(date);
-    const endDateOfMonth = endOfMonth(date);
-
-    const sessionId = await getSessionId();
-    const postCount = await db.post.count({
-      where: {
-        userId: sessionId,
-        created_at: {
-          gte: startDateOfMonth,
-          lt: endDateOfMonth,
+export const getPostsByLoggedInUser = withErrorHandling(async () => {
+  const sessionId = await getSessionId();
+  const posts = await db.post.findMany({
+    where: {
+      userId: sessionId,
+    },
+    include: {
+      _count: {
+        select: {
+          comments: true,
+          likes: true,
         },
       },
-    });
-    return postCount;
-  });
-
-export const getPostCountByLoggedInUser = () =>
-  withErrorHandling(async () => {
-    const sessionId = await getSessionId();
-    const postCount = await db.post.count({
-      where: {
-        userId: sessionId,
-      },
-    });
-    return postCount;
-  });
-
-export const getPostById = (id: number) =>
-  withErrorHandling(async () => {
-    const post = await db.post.findUnique({ where: { id } });
-    if (!post) {
-      throw new NotFoundError();
-    }
-    return post;
-  });
-
-export const getPostWithUpdateView = (id: number) =>
-  withErrorHandling(async () => {
-    const post = await db.post.update({
-      where: {
-        id,
-      },
-      data: {
-        views: {
-          increment: 1,
+      user: true,
+      aiComments: {
+        include: {
+          aiBot: true,
         },
       },
-      include: {
-        _count: {
-          select: {
-            comments: true,
-          },
-        },
-        user: {
-          select: {
-            username: true,
-            avatar: true,
-          },
+    },
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+  return posts;
+});
+
+export const getPostsCountForThisMonth = withErrorHandling(async () => {
+  const date = new Date();
+  const startDateOfMonth = startOfMonth(date);
+  const endDateOfMonth = endOfMonth(date);
+
+  const sessionId = await getSessionId();
+  const postCount = await db.post.count({
+    where: {
+      userId: sessionId,
+      created_at: {
+        gte: startDateOfMonth,
+        lt: endDateOfMonth,
+      },
+    },
+  });
+  return postCount;
+});
+
+export const getPostCountByLoggedInUser = withErrorHandling(async () => {
+  const sessionId = await getSessionId();
+  const postCount = await db.post.count({
+    where: {
+      userId: sessionId,
+    },
+  });
+  return postCount;
+});
+
+export const getPostById = withErrorHandling(async (id: number) => {
+  const post = await db.post.findUnique({ where: { id } });
+  if (!post) {
+    throw new NotFoundError();
+  }
+  return post;
+});
+
+export const getPostWithUpdateView = withErrorHandling(async (id: number) => {
+  const post = await db.post.update({
+    where: {
+      id,
+    },
+    data: {
+      views: {
+        increment: 1,
+      },
+    },
+    include: {
+      _count: {
+        select: {
+          comments: true,
         },
       },
-    });
-    return post;
-  });
-
-export const getWrittenPostByYearnAndMonth = (year: number, month: number) =>
-  withErrorHandling(async () => {
-    if (isNaN(year) || isNaN(month) || month < 1 || month > 12) {
-      throw new ValidationError("Invalid year or month");
-    }
-
-    const date = new Date(year, month - 1);
-    const startDateOfMonth = startOfMonth(date);
-    const endDateOfMonth = endOfMonth(date);
-
-    const sessionId = await getSessionId();
-    const posts = await db.post.findMany({
-      where: {
-        userId: sessionId,
-        created_at: {
-          gte: startDateOfMonth,
-          lt: endDateOfMonth,
+      user: {
+        select: {
+          username: true,
+          avatar: true,
         },
       },
-    });
-    const groupedPosts = groupPostsByDate(posts);
-    return groupedPosts;
+    },
   });
+  return post;
+});
+
+export const getWrittenPostByYearnAndMonth = withErrorHandling(async (year: number, month: number) => {
+  if (isNaN(year) || isNaN(month) || month < 1 || month > 12) {
+    throw new ValidationError("Invalid year or month");
+  }
+
+  const date = new Date(year, month - 1);
+  const startDateOfMonth = startOfMonth(date);
+  const endDateOfMonth = endOfMonth(date);
+
+  const sessionId = await getSessionId();
+  const posts = await db.post.findMany({
+    where: {
+      userId: sessionId,
+      created_at: {
+        gte: startDateOfMonth,
+        lt: endDateOfMonth,
+      },
+    },
+  });
+  const groupedPosts = groupPostsByDate(posts);
+  return groupedPosts;
+});

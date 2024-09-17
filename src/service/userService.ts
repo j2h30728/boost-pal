@@ -12,66 +12,62 @@ export const getSessionId = async () => {
   return session.id;
 };
 
-export const getUserInfoBySession = () =>
-  withErrorHandling(async () => {
-    const sessionId = await getSessionId();
-    const user = await db.user.findUnique({
-      where: {
-        id: sessionId,
-      },
-    });
-    if (!user) {
-      throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
-    }
-    return user;
+export const getUserInfoBySession = withErrorHandling(async () => {
+  const sessionId = await getSessionId();
+  const user = await db.user.findUnique({
+    where: {
+      id: sessionId,
+    },
   });
+  if (!user) {
+    throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
+  }
+  return user;
+});
 
-export const getUserIdByEmail = (email: string) =>
-  withErrorHandling(async () => {
-    const user = await db.user.findUnique({
-      where: {
-        email,
-      },
-      select: {
-        id: true,
-      },
-    });
-    if (!user) {
-      throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
-    }
-    return user;
+export const getUserIdByEmail = withErrorHandling(async (email: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+    },
   });
+  if (!user) {
+    throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
+  }
+  return user;
+});
 
-export const getUserByUsername = (username: string) =>
-  withErrorHandling(async () => {
-    const user = await db.user.findUnique({
-      where: {
-        username,
-      },
-      select: {
-        id: true,
-      },
-    });
-    if (!user) {
-      throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
-    }
-    return user;
+export const getUserByUsername = withErrorHandling(async (username: string) => {
+  const user = await db.user.findUnique({
+    where: {
+      username,
+    },
+    select: {
+      id: true,
+    },
   });
+  if (!user) {
+    throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
+  }
+  return user;
+});
 
-export const getUserAuthInfo = () =>
-  withErrorHandling(async () => {
-    const sessionId = await getSessionId();
-    const user = await db.user.findUnique({
-      where: {
-        id: sessionId,
-      },
-      select: {
-        id: true,
-        password: true,
-      },
-    });
-    if (!user) {
-      throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
-    }
-    return user;
+export const getUserAuthInfo = withErrorHandling(async () => {
+  const sessionId = await getSessionId();
+  const user = await db.user.findUnique({
+    where: {
+      id: sessionId,
+    },
+    select: {
+      id: true,
+      password: true,
+    },
   });
+  if (!user) {
+    throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
+  }
+  return user;
+});

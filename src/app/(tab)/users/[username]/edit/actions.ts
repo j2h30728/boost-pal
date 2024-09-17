@@ -13,7 +13,7 @@ import { cacheTags } from "@/lib/cacheTags";
 import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
 import { ValidationError } from "@/lib/error/customError";
 
-export async function editProfile(formData: FormData) {
+export const editProfile = async (formData: FormData) => {
   const data = {
     email: formData.get("email"),
     username: formData.get("username"),
@@ -74,4 +74,4 @@ export async function editProfile(formData: FormData) {
     return generateErrorResponse(userInfoError);
   }
   redirect(`/users/${user.username}`);
-}
+};

@@ -1,12 +1,8 @@
-import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
+import { withErrorHandling } from "@/lib/error/withErrorHandling";
 import db from "@/lib/server/db";
-import { ServerResponse } from "@/lib/types";
 
-export const getLikeStatus = async (
-  postId: number,
-  userId: number
-): Promise<ServerResponse<{ isLiked: boolean; likeCount: number }>> => {
-  try {
+export const getLikeStatus = (postId: number, userId: number) =>
+  withErrorHandling(async () => {
     const like = await db.like.findUnique({
       where: {
         id: {
@@ -20,8 +16,5 @@ export const getLikeStatus = async (
         postId,
       },
     });
-    return { data: { isLiked: Boolean(like), likeCount }, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+    return { isLiked: Boolean(like), likeCount };
+  });

@@ -8,6 +8,5 @@ export async function getUploadUrl() {
       },
     }
   );
-  const data = await response.json();
-  return data;
+  return response.json();
 }

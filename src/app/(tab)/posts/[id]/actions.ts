@@ -10,6 +10,7 @@ import { ROUTE_PATHS } from "@/constants/routePath";
 import { cacheTags } from "@/lib/cacheTags";
 import { ServerResponse } from "@/lib/types";
 import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
+import { getSessionId } from "@/service/userService";
 
 export const likePost = async (postId: number) => {
   const session = await getSession();
@@ -76,17 +77,15 @@ export const deleteComment = async (commentId: number, postId: number) => {
 export const deletePost = async (formData: FormData): Promise<ServerResponse<unknown>> => {
   try {
     const postId = Number(formData.get("id"));
-    const session = await getSession();
+    const sessionId = await getSessionId();
 
-    if (session.id) {
-      await db.post.delete({
-        where: {
-          id: postId,
-          userId: session.id,
-        },
-      });
-      revalidatePath(`/posts/${postId}`);
-    }
+    await db.post.delete({
+      where: {
+        id: postId,
+        userId: sessionId,
+      },
+    });
+    revalidatePath(`/posts/${postId}`);
   } catch (error) {
     return generateErrorResponse(error);
   }

@@ -10,7 +10,9 @@ export default async function RootLayout({
 }>) {
   const { data: user, error: authError } = await getUserInfoBySession();
 
-  if (authError) redirect("/intro");
+  if (authError) {
+    redirect("/intro");
+  }
 
   return (
     <div className="relative pb-[100px]">

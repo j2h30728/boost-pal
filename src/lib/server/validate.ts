@@ -1,7 +1,6 @@
 "use server";
 
-import { getUserAuthInfo, getUserByEmail, getUserByUsername } from "@/service/userService";
-import { getSession } from "./session";
+import { getUserAuthInfo, getUserIdByEmail, getUserByUsername, getSessionId } from "@/service/userService";
 import bcrypt from "bcrypt";
 
 export const isUsernameExists = async (username: string) => {
@@ -10,32 +9,32 @@ export const isUsernameExists = async (username: string) => {
 };
 
 export const isEmailExists = async (email: string) => {
-  const user = await getUserByEmail(email);
+  const user = await getUserIdByEmail(email);
 
   return Boolean(user);
 };
 
 export const checkEmailAvailability = async (email: string) => {
-  const session = await getSession();
-  const user = await getUserByEmail(email);
+  const sessionId = await getSessionId();
+  const { data: user } = await getUserIdByEmail(email);
 
-  if (session.id === user?.id) return !Boolean(user);
+  if (sessionId === user?.id) return !Boolean(user);
 
   return Boolean(user);
 };
 
 export const checkUsernameAvailability = async (username: string) => {
-  const session = await getSession();
-  const user = await getUserByUsername(username);
+  const sessionId = await getSessionId();
+  const { data: user } = await getUserByUsername(username);
 
-  if (session.id === user?.id) return !Boolean(user);
+  if (sessionId === user?.id) return !Boolean(user);
 
   return Boolean(user);
 };
 
 export const checkUserPassword = async (password: string) => {
-  const user = await getUserAuthInfo();
-  const isValidPassword = await bcrypt.compare(password, user!.password ?? "소셜로그인");
+  const { data: user } = await getUserAuthInfo();
+  const isValidPassword = await bcrypt.compare(password, user?.password ?? "소셜로그인");
 
   return isValidPassword;
 };

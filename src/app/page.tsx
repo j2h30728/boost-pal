@@ -3,7 +3,7 @@ import Image from "next/image";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 
 import PostList from "@/components/post/post-list";
-import getMostPopularCategoryPosts, { getInitialPosts } from "@/service/postService";
+import { getMostPopularCategoryPosts, getInitialPosts } from "@/service/postService";
 import InfinitePostList from "@/components/post/infinite-post-list";
 import { getMostPopularCategory } from "@/service/categoryService";
 import { CATEGORIES, makeCategoryPath } from "@/constants/categories";
@@ -11,12 +11,22 @@ import TabBar from "@/components/common/tab-bar";
 import { getUserInfoBySession } from "@/service/userService";
 
 import mainImage from "../../public/images/main-image.webp";
+import { throwErrors } from "@/lib/error/throwErrors";
+import ErrorComponent from "@/components/common/ErrorComponent";
 
 export default async function Home() {
-  const mostPopularCategoryPosts = await getMostPopularCategoryPosts();
-  const category = await getMostPopularCategory();
-  const { items: initialInfinitePosts, cursorId: initialInfiniteCursorId } = await getInitialPosts();
-  const user = await getUserInfoBySession();
+  const {
+    data: mostPopularCategoryPosts,
+    error: postsError,
+    message: mostPostsMessage,
+  } = await getMostPopularCategoryPosts();
+  const { data: category, error: categoryError, message: categoryMessage } = await getMostPopularCategory();
+  const { data: initialPosts, error: postError, message: initialPostsMessage } = await getInitialPosts();
+  const { data: user, error: loggedInUserError, message: userMessage } = await getUserInfoBySession();
+
+  if (postsError || categoryError || postError || loggedInUserError) {
+    return <ErrorComponent message={mostPostsMessage || categoryMessage || initialPostsMessage || userMessage} />;
+  }
 
   return (
     <main className="flex flex-col gap-4 ">
@@ -67,7 +77,7 @@ export default async function Home() {
               <span>더보기</span> <ChevronRightIcon className="w-4 h-3" />
             </Link>
           </div>
-          <InfinitePostList initialPosts={initialInfinitePosts} initialCursorId={initialInfiniteCursorId} />
+          <InfinitePostList initialPosts={initialPosts.items} initialCursorId={initialPosts.nextCursorId} />
         </div>
       </div>
       <TabBar username={user.username} />

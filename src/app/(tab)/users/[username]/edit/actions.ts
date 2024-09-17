@@ -6,11 +6,12 @@ import { redirect } from "next/navigation";
 
 import db from "@/lib/server/db";
 import { profileSchema } from "@/lib/schema";
-import { getSession } from "@/lib/server/session";
 import { checkEmailAvailability, checkUsernameAvailability, checkUserPassword } from "@/lib/server/validate";
-import { getUserAuthInfo, getUserInfoBySession } from "@/service/userService";
+import { getSessionId, getUserAuthInfo, getUserInfoBySession } from "@/service/userService";
 import { PASSWORD_ERROR_MESSAGE, USER_INFO_ERROR_MESSAGE } from "@/constants/messages";
 import { cacheTags } from "@/lib/cacheTags";
+import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
+import { ValidationError } from "@/lib/error/customError";
 
 export async function editProfile(formData: FormData) {
   const data = {
@@ -26,21 +27,21 @@ export async function editProfile(formData: FormData) {
   try {
     const isValidPassword = await checkUserPassword(result.data.password);
     if (!isValidPassword) {
-      throw new Error(PASSWORD_ERROR_MESSAGE);
+      throw new ValidationError(PASSWORD_ERROR_MESSAGE);
     }
     const checkEmail = await checkEmailAvailability(result.data?.email!);
     const checkUsername = await checkUsernameAvailability(result.data?.username!);
     if (checkUsername || checkEmail) {
-      throw new Error(USER_INFO_ERROR_MESSAGE);
+      throw new ValidationError(USER_INFO_ERROR_MESSAGE);
     }
 
-    const session = await getSession();
+    const sessionId = await getSessionId();
 
     if (result.data && result.data.newPassword) {
       const hashedNewPassword = await bcrypt.hash(result.data?.newPassword, 12);
       await db.user.update({
         where: {
-          id: session.id,
+          id: sessionId,
         },
         data: {
           email: result.data?.email,
@@ -51,10 +52,10 @@ export async function editProfile(formData: FormData) {
         },
       });
     }
-    const loggedInUser = await getUserAuthInfo();
+    const { data: loggedInUser } = await getUserAuthInfo();
     await db.user.update({
       where: {
-        id: session.id,
+        id: sessionId,
       },
       data: {
         email: result.data?.email,
@@ -65,12 +66,12 @@ export async function editProfile(formData: FormData) {
       },
     });
   } catch (error) {
-    if (error instanceof Error) {
-      return error.message;
-    }
-    return String(error);
+    return generateErrorResponse(error);
   }
   revalidateTag(cacheTags.profile);
-  const user = await getUserInfoBySession();
+  const { data: user, error: userInfoError } = await getUserInfoBySession();
+  if (userInfoError) {
+    return generateErrorResponse(userInfoError);
+  }
   redirect(`/users/${user.username}`);
 }

@@ -6,8 +6,7 @@ import { CATEGORIES } from "@/constants/categories";
 import { cacheTags } from "@/lib/cacheTags";
 
 import { deletePost } from "./actions";
-import { getSession } from "@/lib/server/session";
-import { getUserInfoBySession } from "@/service/userService";
+import { getSessionId, getUserInfoBySession } from "@/service/userService";
 import { getPostById, getPostWithUpdateView } from "@/service/postService";
 import { getInitialComments } from "@/service/commentService";
 import { getLikeStatus } from "@/service/likeService";
@@ -20,9 +19,10 @@ import Comment from "@/components/post/comment";
 import LikeButton from "@/components/post/like-button";
 import UserDefaultImage from "@/components/common/user-default-image";
 import DetailImage from "@/components/post/detail-image";
+import { throwErrors } from "@/lib/error/throwErrors";
 
 export async function generateMetadata({ params }: { params: { id: string } }) {
-  const product = await getPostById(Number(params.id));
+  const { data: product } = await getPostById(Number(params.id));
   return {
     title: product?.description.slice(0, 10),
   };
@@ -36,41 +36,42 @@ function getCachedPostDetail(postId: number) {
 }
 
 async function getCachedLikeStatus(postId: number) {
-  const session = await getSession();
+  const sessionId = await getSessionId();
   const cachedLikeStatus = unstable_cache(getLikeStatus, ["post-like-status"], {
     tags: [cacheTags.postLike(postId)],
   });
-  return cachedLikeStatus(postId, session.id!);
+  return cachedLikeStatus(postId, sessionId);
 }
 
 async function getCachedComments(postId: number) {
-  const session = await getSession();
+  const sessionId = await getSessionId();
   const cachedComments = unstable_cache(getInitialComments, ["post-comments"], {
     tags: [cacheTags.postComment(postId)],
   });
-  return cachedComments(postId, session.id!);
+  return cachedComments(postId, sessionId);
 }
 
 async function getIsAuthor(userId: number) {
-  const session = await getSession();
-  if (session.id) return session.id === userId;
+  const sessionId = await getSessionId();
+  if (sessionId) return sessionId === userId;
 
   return false;
 }
 export default async function DetailPost({ params }: { params: { id: string } }) {
   const id = Number(params.id);
+  if (Number.isNaN(id)) return notFound();
 
-  if (isNaN(id)) return notFound();
+  const { data: loggedInUser, error: loggedInUserError } = await getUserInfoBySession();
+  const { data: post, error: postError } = await getCachedPostDetail(Number(id));
+  const { data: comments, error: commentError } = await getCachedComments(id);
+  const { data: likeStatus, error: likeError } = await getCachedLikeStatus(id);
 
-  const loggedInUser = await getUserInfoBySession();
-  const post = await getCachedPostDetail(id);
-  const comments = await getCachedComments(id);
-
-  if (!post) return notFound();
+  if (loggedInUserError || postError || commentError || likeError) {
+    return throwErrors(loggedInUserError, postError, commentError, likeError);
+  }
 
   const isAuthor = await getIsAuthor(post.userId);
-  const { isLiked, likeCount } = await getCachedLikeStatus(id);
-  const aiComment = await fetchInitialComment(post.id);
+  const { data: aiComment } = await fetchInitialComment(post.id);
   return (
     <div className="w-full">
       <div className="p-5 flex items-center gap-3">
@@ -86,7 +87,7 @@ export default async function DetailPost({ params }: { params: { id: string } })
         <p>{post.description}</p>
         <div className="flex gap-5 items-start justify-between">
           <div className="flex gap-2">
-            <LikeButton isLiked={isLiked} likeCount={likeCount} postId={id} />
+            <LikeButton isLiked={likeStatus.isLiked} likeCount={likeStatus.likeCount} postId={id} />
             <div className="flex items-center gap-2 text-neutral-400 text-sm">
               <EyeIcon className="size-6 text-underline" />
               <span>{post.views}</span>

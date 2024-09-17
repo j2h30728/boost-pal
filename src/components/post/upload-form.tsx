@@ -19,6 +19,7 @@ export default function UploadForm() {
     register,
     handleSubmit,
     setValue,
+    setError,
     formState: { errors },
   } = useForm<UploadPostType>({
     resolver: zodResolver(postSchema),
@@ -38,7 +39,8 @@ export default function UploadForm() {
     formData.append("category", data.category);
     formData.append("description", data.description);
     formData.append("photo", data.photo);
-    await uploadPost(formData);
+    const { message } = await uploadPost(formData);
+    setError("root", { message });
   });
 
   const onValid = async () => {
@@ -86,6 +88,7 @@ export default function UploadForm() {
         />
       </div>
       <Button text="작성 완료" />
+      <p className="text-error">{errors.root?.message}</p>
     </form>
   );
 }

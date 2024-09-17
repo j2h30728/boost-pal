@@ -1,4 +1,4 @@
-import { getUploadUrl } from "@/app/upload/actions";
+import { getUploadUrl } from "@/service/imageService";
 import { useState } from "react";
 
 export default function useUploadImage(initialImage?: string) {

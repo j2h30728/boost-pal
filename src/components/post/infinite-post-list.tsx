@@ -1,6 +1,6 @@
 "use client";
 
-import { getPaginatedPosts, InitialPosts } from "@/service/postService";
+import { getPaginatedPosts, ListOfPost } from "@/service/postService";
 import { CATEGORIES } from "@/constants/categories";
 
 import ListPost from "./list-post";
@@ -11,7 +11,7 @@ export default function InfinitePostList({
   initialCursorId,
   category,
 }: {
-  initialPosts: InitialPosts["items"];
+  initialPosts: ListOfPost[];
   initialCursorId: number | null;
   category?: keyof typeof CATEGORIES;
 }) {

@@ -13,11 +13,20 @@ export default async function PostListByCategoryPage({ params }: { params: { cat
   if (!isCategory(upperCaseCategoryName)) {
     notFound();
   }
-  const { items: posts, cursorId } = await getInitialPosts(upperCaseCategoryName);
+  const { data: initialPosts, error } = await getInitialPosts(upperCaseCategoryName);
+
+  if (error) {
+    throw error;
+  }
+
   return (
     <div className="pb-10">
       <h3 className="font-extrabold text-xl pb-2">최근 다미가 응원한 {CATEGORIES[upperCaseCategoryName]} 인증</h3>
-      <InfinitePostList initialPosts={posts} initialCursorId={cursorId} category={upperCaseCategoryName} />
+      <InfinitePostList
+        initialPosts={initialPosts?.items}
+        initialCursorId={initialPosts?.nextCursorId}
+        category={upperCaseCategoryName}
+      />
     </div>
   );
 }

@@ -1,13 +1,16 @@
+import { ServerResponse } from "@/lib/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 type FetchMoreItems<T> = (
   cursorId: number | null,
   option?: any
-) => Promise<{
-  items: T[];
-  nextCursorId: number | null;
-  isLastPage: boolean;
-}>;
+) => Promise<
+  ServerResponse<{
+    items: T[];
+    nextCursorId: number | null;
+    isLastPage: boolean;
+  }>
+>;
 
 interface UseInfiniteScrollOptions<T> {
   initialItems: T[];
@@ -32,10 +35,12 @@ function useInfiniteScroll<T>({
     if (isLoading || isLastPage) return;
     setIsLoading(true);
     try {
-      const { items: newItems, nextCursorId, isLastPage: newIsLastPage } = await fetchMoreItems(cursorId, fetchOption);
-      setItems((prev) => [...prev, ...newItems]);
-      setCursorId(nextCursorId);
-      setIsLastPage(newIsLastPage);
+      const { data, isSuccess } = await fetchMoreItems(cursorId, fetchOption);
+      if (isSuccess) {
+        setItems((prev) => [...prev, ...data?.items]);
+        setCursorId(data?.nextCursorId);
+        setIsLastPage(data?.isLastPage);
+      }
     } catch (error) {
       console.error("Error fetching more items:", error);
     } finally {

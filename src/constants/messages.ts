@@ -6,6 +6,10 @@ export const USERNAME_ERROR_MESSAGE = "이미 존재하는 이름입니다.";
 export const PASSWORD_ERROR_MESSAGE = "비밀번호를 확인해주세요.";
 
 export const NOT_EXISTS_USER_MESSAGE = "존재하지 않은 사용자 입니다.";
+export const NOT_EXISTS_POST_MESSAGE = "인증 기록이 존재하지 않습니다.";
+export const NOT_EXISTS_AI_COMMENT_MESSAGE = "AI 코멘트가 존재하지 않습니다.";
+export const NOT_EXISTS_CATEGORY_MESSAGE = "카테고리가 존재하지 않습니다.";
 export const UNKNOWN_ERROR_MESSAGE = "알 수 없는 에러가 발생했습니다.";
 export const AUTHORIZATION_ERROR_MESSAGE = "Unauthorized: 로그인이 필요합니다.";
 export const NOT_FOUND_MESSAGE = "요청한 리소스를 찾을수 없습니다.";
+export const INVALID_INPUT = "잘못된 입력입니다.";

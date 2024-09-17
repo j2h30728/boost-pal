@@ -8,13 +8,13 @@ import Button from "../common/button";
 import Input from "../common/input";
 import useUploadImage from "@/hooks/useUploadImage";
 import { profileSchema, ProfileType } from "@/lib/schema";
-import { InitialProfileType } from "@/service/userService";
 import { editProfile } from "@/app/(tab)/users/[username]/edit/actions";
 import { createBlurValidation } from "@/lib/client/form-validate";
 import { checkEmailAvailability, checkUsernameAvailability } from "@/lib/server/validate";
 import { EMAIL_ERROR_MESSAGE, USERNAME_ERROR_MESSAGE } from "@/constants/messages";
+import { User } from "@prisma/client";
 
-export default function ProfileEditForm({ initialUserInformation }: { initialUserInformation: InitialProfileType }) {
+export default function ProfileEditForm({ initialUserInformation }: { initialUserInformation: User }) {
   const { dispatch, state } = useUploadImage(
     initialUserInformation.avatar ? `${initialUserInformation.avatar}/small` : ""
   );

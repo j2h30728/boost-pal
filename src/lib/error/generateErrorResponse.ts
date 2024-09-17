@@ -3,8 +3,9 @@ import { Prisma } from "@prisma/client";
 
 import { AuthorizationError, DatabaseError, NotFoundError } from "@/lib/error/customError";
 import { UNKNOWN_ERROR_MESSAGE } from "@/constants/messages";
+import { FailResponse } from "../types";
 
-export const generateErrorResponse = (error: unknown, defaultErrorMessage?: string) => {
+export const generateErrorResponse = (error: unknown, defaultErrorMessage?: string): FailResponse => {
   if (error instanceof AuthorizationError) {
     return { data: null, isSuccess: false, message: error.message, error: error };
   }

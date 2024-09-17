@@ -1,7 +1,8 @@
 import Link from "next/link";
+import Image from "next/image";
 
 import { ROUTE_PATHS } from "@/constants/routePath";
-import Image from "next/image";
+import Logo from "@/components/common/Logo";
 
 import mainImage from "../../../public/images/main-image.webp";
 
@@ -12,10 +13,9 @@ export default function IntroPage() {
         <div className="w-72 h-96 relative">
           <Image priority className="w-auto h-full" src={mainImage} width={288} height={384} alt="main-image" />
         </div>
-        <h1 className=" font-black flex gap-2 text-[44px] absolute -translate-y-1/2 top-1/2">
-          <p className="first-letter:text-primary">BOOST</p>
-          <p className="first-letter:text-primary">PAL</p>
-        </h1>
+        <div className=" absolute -translate-y-1/2 top-1/2">
+          <Logo />
+        </div>
       </div>
       <div className="w-full flex flex-col gap-3  items-center">
         <Link className="w-full primary-button" href={ROUTE_PATHS.LOG_IN}>

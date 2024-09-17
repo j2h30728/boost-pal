@@ -11,7 +11,6 @@ import TabBar from "@/components/common/tab-bar";
 import { getUserInfoBySession } from "@/service/userService";
 
 import mainImage from "../../public/images/main-image.webp";
-import { throwErrors } from "@/lib/error/throwErrors";
 import ErrorComponent from "@/components/common/ErrorComponent";
 
 export default async function Home() {

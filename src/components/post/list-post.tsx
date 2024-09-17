@@ -3,7 +3,7 @@ import Link from "next/link";
 import { CATEGORIES } from "@/constants/categories";
 import { formatToTimeAgo } from "@/lib/client/utils";
 import UserDefaultImage from "../common/user-default-image";
-import { ListOfPost } from "@/service/postService";
+import { ListOfPost } from "@/lib/types";
 
 export default function ListPost({ id, description, created_at, category, user, aiComments }: ListOfPost) {
   return (

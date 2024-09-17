@@ -1,27 +1,16 @@
 "use server";
 
 import { endOfMonth, startOfMonth } from "date-fns";
-import { AiBot, AiComment, Category, Post, Prisma, User } from "@prisma/client";
+import { Category } from "@prisma/client";
 
 import db from "@/lib/server/db";
 import { LIMIT_NUMBER } from "@/constants/posts";
 import { getMostPopularCategory } from "./categoryService";
-import { ServerResponse } from "@/lib/types";
 import { NotFoundError, ValidationError } from "@/lib/error/customError";
-import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
 import { getSessionId } from "./userService";
 import { groupPostsByDate } from "@/lib/utils";
 import { withErrorHandling } from "@/lib/error/withErrorHandling";
 
-type PostOfAiComment = AiComment & { aiBot: AiBot };
-export type ListOfPost = Post & { user: User } & { _count: { comments: number; likes: number } } & {
-  aiComments: PostOfAiComment[];
-};
-export interface CursorPagination {
-  items: ListOfPost[];
-  nextCursorId: number | null;
-  isLastPage: boolean;
-}
 export const getInitialPosts = withErrorHandling(async (category?: Category) => {
   const posts = await db.post.findMany({
     where: {
@@ -52,7 +41,6 @@ export const getInitialPosts = withErrorHandling(async (category?: Category) => 
   const nextCursorId = posts.at(-1)?.id || null;
   return { items: posts, nextCursorId, isLastPage: nextCursorId === null };
 });
-export type InitialPosts = Prisma.PromiseReturnType<typeof getInitialPosts>;
 
 export const getPaginatedPosts = withErrorHandling(async (cursorId: number | null, option?: { category: Category }) => {
   const posts = await db.post.findMany({
@@ -89,54 +77,47 @@ export const getPaginatedPosts = withErrorHandling(async (cursorId: number | nul
   return { items: posts, nextCursorId, isLastPage };
 });
 
-export type PaginatedPosts = Prisma.PromiseReturnType<typeof getPaginatedPosts>;
-
-export const getPostsByCategory = async (category: Category): Promise<ServerResponse<ListOfPost[]>> => {
-  try {
-    const posts = await db.post.findMany({
-      where: {
-        category,
-      },
-      include: {
-        _count: {
-          select: {
-            comments: true,
-            likes: true,
-          },
-        },
-        user: true,
-        aiComments: {
-          include: {
-            aiBot: true,
-          },
+export const getPostsByCategory = withErrorHandling(async (category: Category) => {
+  const posts = await db.post.findMany({
+    where: {
+      category,
+    },
+    include: {
+      _count: {
+        select: {
+          comments: true,
+          likes: true,
         },
       },
-      take: 2,
-      orderBy: {
-        created_at: "desc",
+      user: true,
+      aiComments: {
+        include: {
+          aiBot: true,
+        },
       },
-    });
-    return { data: posts, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+    },
+    take: 2,
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+  return posts;
+});
 
 export const getMostPopularCategoryPosts = withErrorHandling(async () => {
-  const { data: category, isSuccess: categorySuccess, error } = await getMostPopularCategory();
+  const { data: category, isSuccess: categorySuccess, error: categoryError } = await getMostPopularCategory();
   if (!categorySuccess) {
-    throw error;
+    throw categoryError;
   }
 
   if (!category) {
-    return {
-      data: [],
-      isSuccess: true,
-      message: "인증 기록이 존재하지 않아 인기 주제가 없습니다.",
-      error: null,
-    };
+    return [];
   }
-  return getPostsByCategory(category);
+  const { data: posts, isSuccess: postsSuccess, error: postsError } = await getPostsByCategory(category);
+  if (postsSuccess) {
+    throw postsError;
+  }
+  return posts ?? [];
 });
 
 export const getPostsByLoggedInUser = withErrorHandling(async () => {

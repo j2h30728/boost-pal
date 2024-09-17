@@ -1,10 +1,11 @@
 "use client";
 
-import { getPaginatedPosts, ListOfPost } from "@/service/postService";
+import { getPaginatedPosts } from "@/service/postService";
 import { CATEGORIES } from "@/constants/categories";
 
 import ListPost from "./list-post";
 import useInfiniteScroll from "@/hooks/useInfiniteScroll";
+import { ListOfPost } from "@/lib/types";
 
 export default function InfinitePostList({
   initialPosts,

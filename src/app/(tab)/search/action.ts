@@ -14,10 +14,7 @@ export const searchPosts = withErrorHandling(async (_: unknown, formData: FormDa
     throw new ValidationError(formatZodErrorMessage(result.error));
   }
   const posts = await getKeywordOfPost(result.data);
-  if (!posts) {
-    return { data: [], isSuccess: true, message: "검색 결과가 존재하지 않습니다.", error: null };
-  }
-  return posts;
+  return posts ?? [];
 });
 
 async function getKeywordOfPost(keyword: string) {

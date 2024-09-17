@@ -59,7 +59,9 @@ async function getIsAuthor(userId: number) {
 }
 export default async function DetailPost({ params }: { params: { id: string } }) {
   const id = Number(params.id);
-  if (Number.isNaN(id)) return notFound();
+  if (Number.isNaN(id)) {
+    return notFound();
+  }
 
   const { data: loggedInUser, error: loggedInUserError } = await getUserInfoBySession();
   const { data: post, error: postError } = await getCachedPostDetail(Number(id));

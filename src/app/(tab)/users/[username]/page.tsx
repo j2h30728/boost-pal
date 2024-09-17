@@ -6,10 +6,16 @@ import { getUserInfoBySession } from "@/service/userService";
 import { getPostsByLoggedInUser } from "@/service/postService";
 import UserDefaultImage from "@/components/common/user-default-image";
 import { logOut } from "./actions";
+import { throwErrors } from "@/lib/error/throwErrors";
 
 export default async function ProfilePage({ params }: { params: { username: string } }) {
-  const loggedInUser = await getUserInfoBySession();
-  const posts = await getPostsByLoggedInUser();
+  const { data: loggedInUser, error: userInfoError } = await getUserInfoBySession();
+  const { data: posts, error: postsError } = await getPostsByLoggedInUser();
+
+  if (userInfoError || postsError) {
+    return throwErrors(userInfoError, postsError);
+  }
+
   return (
     <main className="flex flex-col gap-1">
       <div className="flex flex-col">

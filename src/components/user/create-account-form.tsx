@@ -29,8 +29,8 @@ export default function CreateAccount() {
     formData.append("username", data.username);
     formData.append("password", data.password);
     formData.append("confirm_password", data.confirm_password);
-    const errors = await handleCreateAccount(formData);
-    setError("root", { message: errors?.toString() });
+    const { message } = await handleCreateAccount(formData);
+    setError("root", { message });
   });
 
   const onValid = async () => {

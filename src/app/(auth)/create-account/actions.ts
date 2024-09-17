@@ -8,8 +8,12 @@ import { getSession } from "@/lib/server/session";
 import { accountSchema } from "@/lib/schema";
 import { isEmailExists, isUsernameExists } from "@/lib/server/validate";
 import { USER_INFO_ERROR_MESSAGE } from "@/constants/messages";
+import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
+import { ServerResponse } from "@/lib/types";
+import { ValidationError } from "@/lib/error/customError";
+import { formatZodErrorMessage } from "@/lib/utils";
 
-export async function handleCreateAccount(formData: FormData) {
+export async function handleCreateAccount(formData: FormData): Promise<ServerResponse<unknown>> {
   const accountData = {
     email: formData.get("email"),
     username: formData.get("username"),
@@ -22,18 +26,15 @@ export async function handleCreateAccount(formData: FormData) {
     const checkUsername = await isUsernameExists(result.data?.username!);
     const checkEmail = await isEmailExists(result.data?.email!);
     if (checkUsername || checkEmail) {
-      throw new Error(USER_INFO_ERROR_MESSAGE);
+      throw new ValidationError(USER_INFO_ERROR_MESSAGE);
     }
 
     if (!result.success) {
-      return result.error?.flatten();
+      return { data: null, isSuccess: false, message: formatZodErrorMessage(result.error), error: result.error };
     }
     await createAccount(result.data);
   } catch (error) {
-    if (error instanceof Error) {
-      return error.message;
-    }
-    return String(error);
+    return generateErrorResponse(error);
   }
   redirect("/");
 }

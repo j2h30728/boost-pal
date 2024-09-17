@@ -8,6 +8,8 @@ import { commentSchema } from "@/lib/schema";
 import { getSession } from "@/lib/server/session";
 import { ROUTE_PATHS } from "@/constants/routePath";
 import { cacheTags } from "@/lib/cacheTags";
+import { ServerResponse } from "@/lib/types";
+import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
 
 export const likePost = async (postId: number) => {
   const session = await getSession();
@@ -71,18 +73,22 @@ export const deleteComment = async (commentId: number, postId: number) => {
   revalidateTag(cacheTags.postComment(postId));
 };
 
-export const deletePost = async (formData: FormData) => {
-  const postId = Number(formData.get("id"));
-  const session = await getSession();
+export const deletePost = async (formData: FormData): Promise<ServerResponse<unknown>> => {
+  try {
+    const postId = Number(formData.get("id"));
+    const session = await getSession();
 
-  if (session.id) {
-    await db.post.delete({
-      where: {
-        id: postId,
-        userId: session.id,
-      },
-    });
+    if (session.id) {
+      await db.post.delete({
+        where: {
+          id: postId,
+          userId: session.id,
+        },
+      });
+      revalidatePath(`/posts/${postId}`);
+    }
+  } catch (error) {
+    return generateErrorResponse(error);
   }
-  revalidatePath(`/posts/${postId}`);
   redirect(ROUTE_PATHS.POSTS);
 };

@@ -11,7 +11,7 @@ export default function SearchPage() {
   return (
     <div className="flex flex-col">
       <SearchForm onSearch={action} />
-      <PostList initialPosts={state?.data ?? []} />
+      {state?.isSuccess ? <PostList initialPosts={state.data ?? []} /> : <p>{state?.message}</p>}
     </div>
   );
 }

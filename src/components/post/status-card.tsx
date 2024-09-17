@@ -1,8 +1,20 @@
-import { getPostCountByLoggedInUser, getPostCountForThisMonth } from "@/service/postService";
+import { getPostCountByLoggedInUser, getPostsCountForThisMonth } from "@/service/postService";
+import ErrorComponent from "../common/ErrorComponent";
 
 export default async function StatusCard() {
-  const postAllCount = await getPostCountByLoggedInUser();
-  const postCountForThisMonth = await getPostCountForThisMonth();
+  const {
+    data: postAllCount,
+    error: postsCountError,
+    message: postsAllCountMessage,
+  } = await getPostCountByLoggedInUser();
+  const {
+    data: PostsCountForThisMonth,
+    error: PostsCountForThisMonthError,
+    message: thisMonthCountMessage,
+  } = await getPostsCountForThisMonth();
+  if (postsCountError || PostsCountForThisMonthError) {
+    <ErrorComponent message={postsAllCountMessage || thisMonthCountMessage} />;
+  }
   return (
     <div className="flex justify-around w-full *:py-5 *:gap-2 ">
       <div className=" *:font-semibold flex flex-col items-center ">
@@ -11,7 +23,7 @@ export default async function StatusCard() {
       </div>
       <div className=" *:font-semibold flex flex-col items-center ">
         <span>이번달 인증</span>
-        <div className="chip w-[60px]">{postCountForThisMonth}</div>
+        <div className="chip w-[60px]">{PostsCountForThisMonth}</div>
       </div>
     </div>
   );

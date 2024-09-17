@@ -2,6 +2,10 @@ import AWS from "aws-sdk";
 
 import { InitialAiComment } from "@/components/post/ai-comment";
 import db from "@/lib/server/db";
+import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
+import { ServerResponse } from "@/lib/types";
+import { NOT_EXISTS_AI_COMMENT_MESSAGE, NOT_EXISTS_POST_MESSAGE } from "@/constants/messages";
+import { NotFoundError } from "@/lib/error/customError";
 
 const sqs = new AWS.SQS({ region: "ap-northeast-2" });
 
@@ -27,27 +31,34 @@ export const sendAiCommentToSQS = async (messageBody: MessageBody): Promise<stri
   }
 };
 
-export const fetchInitialComment: (postId: number) => Promise<InitialAiComment | null> = async (postId: number) => {
-  const post = await db.post.findUnique({
-    where: {
-      id: postId,
-    },
-    select: {
-      aiComments: {
-        include: {
-          aiBot: true,
+export const fetchInitialComment = async (postId: number): Promise<ServerResponse<InitialAiComment | null>> => {
+  try {
+    const post = await db.post.findUnique({
+      where: {
+        id: postId,
+      },
+      select: {
+        aiComments: {
+          include: {
+            aiBot: true,
+          },
         },
       },
-    },
-  });
-  if (post === null) {
-    return null;
+    });
+    if (!post) {
+      throw new NotFoundError(NOT_EXISTS_POST_MESSAGE);
+    }
+    const aiComments = post.aiComments.map((comment) => ({
+      text: comment.text,
+      AiBot: { name: comment.aiBot.name, avatar: comment.aiBot.avatar! },
+    }));
+
+    const [firstAiComment] = aiComments;
+    if (!firstAiComment) {
+      throw new NotFoundError(NOT_EXISTS_AI_COMMENT_MESSAGE);
+    }
+    return { data: firstAiComment, isSuccess: true, message: "", error: null };
+  } catch (error) {
+    return generateErrorResponse(error);
   }
-
-  const aiComment = post.aiComments.map((comment) => ({
-    text: comment.text,
-    AiBot: { name: comment.aiBot.name, avatar: comment.aiBot.avatar! },
-  }));
-
-  return aiComment[0] ?? null;
 };

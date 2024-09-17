@@ -1,11 +1,8 @@
-import { Prisma, User } from "@prisma/client";
-
 import { getSession } from "@/lib/server/session";
 import db from "@/lib/server/db";
 import { AuthorizationError, NotFoundError } from "@/lib/error/customError";
-import { ServerResponse } from "@/lib/types";
 import { NOT_EXISTS_USER_MESSAGE } from "@/constants/messages";
-import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
+import { withErrorHandling } from "@/lib/error/withErrorHandling";
 
 export const getSessionId = async () => {
   const session = await getSession();
@@ -15,8 +12,8 @@ export const getSessionId = async () => {
   return session.id;
 };
 
-export const getUserInfoBySession = async (): Promise<ServerResponse<User>> => {
-  try {
+export const getUserInfoBySession = () =>
+  withErrorHandling(async () => {
     const sessionId = await getSessionId();
     const user = await db.user.findUnique({
       where: {
@@ -26,16 +23,11 @@ export const getUserInfoBySession = async (): Promise<ServerResponse<User>> => {
     if (!user) {
       throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
     }
-    return { data: user, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+    return user;
+  });
 
-export type InitialProfileType = Prisma.PromiseReturnType<typeof getUserInfoBySession>;
-
-export const getUserIdByEmail = async (email: string): Promise<ServerResponse<Pick<User, "id">>> => {
-  try {
+export const getUserIdByEmail = (email: string) =>
+  withErrorHandling(async () => {
     const user = await db.user.findUnique({
       where: {
         email,
@@ -47,13 +39,11 @@ export const getUserIdByEmail = async (email: string): Promise<ServerResponse<Pi
     if (!user) {
       throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
     }
-    return { data: user, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
-export const getUserByUsername = async (username: string): Promise<ServerResponse<Pick<User, "id">>> => {
-  try {
+    return user;
+  });
+
+export const getUserByUsername = (username: string) =>
+  withErrorHandling(async () => {
     const user = await db.user.findUnique({
       where: {
         username,
@@ -65,14 +55,11 @@ export const getUserByUsername = async (username: string): Promise<ServerRespons
     if (!user) {
       throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
     }
-    return { data: user, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+    return user;
+  });
 
-export const getUserAuthInfo = async (): Promise<ServerResponse<Pick<User, "id" | "password">>> => {
-  try {
+export const getUserAuthInfo = () =>
+  withErrorHandling(async () => {
     const sessionId = await getSessionId();
     const user = await db.user.findUnique({
       where: {
@@ -86,8 +73,5 @@ export const getUserAuthInfo = async (): Promise<ServerResponse<Pick<User, "id" 
     if (!user) {
       throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
     }
-    return { data: user, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+    return user;
+  });

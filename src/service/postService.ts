@@ -10,7 +10,8 @@ import { ServerResponse } from "@/lib/types";
 import { NotFoundError, ValidationError } from "@/lib/error/customError";
 import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
 import { getSessionId } from "./userService";
-import { groupPostsByDate, GroupPostsByDateType } from "@/lib/utils";
+import { groupPostsByDate } from "@/lib/utils";
+import { withErrorHandling } from "@/lib/error/withErrorHandling";
 
 type PostOfAiComment = AiComment & { aiBot: AiBot };
 export type ListOfPost = Post & { user: User } & { _count: { comments: number; likes: number } } & {
@@ -189,12 +190,12 @@ export const getPostsByLoggedInUser = async (): Promise<ServerResponse<ListOfPos
   }
 };
 
-export const getPostsCountForThisMonth = async (): Promise<ServerResponse<number>> => {
-  const date = new Date();
-  const startDateOfMonth = startOfMonth(date);
-  const endDateOfMonth = endOfMonth(date);
+export const getPostsCountForThisMonth = () =>
+  withErrorHandling(async () => {
+    const date = new Date();
+    const startDateOfMonth = startOfMonth(date);
+    const endDateOfMonth = endOfMonth(date);
 
-  try {
     const sessionId = await getSessionId();
     const postCount = await db.post.count({
       where: {
@@ -205,41 +206,31 @@ export const getPostsCountForThisMonth = async (): Promise<ServerResponse<number
         },
       },
     });
-    return { data: postCount, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+    return postCount;
+  });
 
-export const getPostCountByLoggedInUser = async (): Promise<ServerResponse<number>> => {
-  try {
+export const getPostCountByLoggedInUser = () =>
+  withErrorHandling(async () => {
     const sessionId = await getSessionId();
     const postCount = await db.post.count({
       where: {
         userId: sessionId,
       },
     });
-    return { data: postCount, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+    return postCount;
+  });
 
-export const getPostById = async (id: number): Promise<ServerResponse<Post>> => {
-  try {
+export const getPostById = (id: number) =>
+  withErrorHandling(async () => {
     const post = await db.post.findUnique({ where: { id } });
     if (!post) {
       throw new NotFoundError();
     }
-    return { data: post, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+    return post;
+  });
 
-type DetailPost = Post & { _count: { comments: number }; user: Pick<User, "username" | "avatar"> };
-export const getPostWithUpdateView = async (id: number): Promise<ServerResponse<DetailPost>> => {
-  try {
+export const getPostWithUpdateView = (id: number) =>
+  withErrorHandling(async () => {
     const post = await db.post.update({
       where: {
         id,
@@ -263,17 +254,11 @@ export const getPostWithUpdateView = async (id: number): Promise<ServerResponse<
         },
       },
     });
-    return { data: post, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+    return post;
+  });
 
-export const getWrittenPostByYearnAndMonth = async (
-  year: number,
-  month: number
-): Promise<ServerResponse<GroupPostsByDateType>> => {
-  try {
+export const getWrittenPostByYearnAndMonth = (year: number, month: number) =>
+  withErrorHandling(async () => {
     if (isNaN(year) || isNaN(month) || month < 1 || month > 12) {
       throw new ValidationError("Invalid year or month");
     }
@@ -293,8 +278,5 @@ export const getWrittenPostByYearnAndMonth = async (
       },
     });
     const groupedPosts = groupPostsByDate(posts);
-    return { data: groupedPosts, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+    return groupedPosts;
+  });

@@ -1,13 +1,12 @@
-import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
+import { withErrorHandling } from "@/lib/error/withErrorHandling";
 import db from "@/lib/server/db";
-import { ServerResponse } from "@/lib/types";
-import { Comment, Prisma, User } from "@prisma/client";
+import { Comment, User } from "@prisma/client";
 
 type Comments = Pick<Comment, "id" | "text" | "created_at"> & { user: Pick<User, "id" | "username"> } & {
   isAuthor: boolean;
 };
-export const getInitialComments = async (postId: number, userId: number): Promise<ServerResponse<Comments[]>> => {
-  try {
+export const getInitialComments = (postId: number, userId: number) =>
+  withErrorHandling(async () => {
     const comments = await db.comment.findMany({
       where: {
         postId,
@@ -25,9 +24,6 @@ export const getInitialComments = async (postId: number, userId: number): Promis
       },
     });
     const formatComments = comments.map((comment) => ({ ...comment, isAuthor: comment.user.id === userId }));
-    return { data: formatComments, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-};
+    return formatComments;
+  });
 export type InitialComments = Comments[];

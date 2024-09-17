@@ -1,15 +1,13 @@
 "use server";
 
 import { ValidationError } from "@/lib/error/customError";
-import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
+import { withErrorHandling } from "@/lib/error/withErrorHandling";
 import { keywordSchema } from "@/lib/schema";
 import db from "@/lib/server/db";
-import { ServerResponse } from "@/lib/types";
 import { formatZodErrorMessage } from "@/lib/utils";
-import { ListOfPost } from "@/service/postService";
 
-export async function searchPosts(_: unknown, formData: FormData): Promise<ServerResponse<ListOfPost[]>> {
-  try {
+export const searchPosts = (_: unknown, formData: FormData) =>
+  withErrorHandling(async () => {
     const keyword = formData.get("keyword");
     const result = keywordSchema.safeParse(keyword);
 
@@ -20,11 +18,8 @@ export async function searchPosts(_: unknown, formData: FormData): Promise<Serve
     if (!posts) {
       return { data: [], isSuccess: true, message: "검색 결과가 존재하지 않습니다.", error: null };
     }
-    return { data: posts, isSuccess: true, message: "", error: null };
-  } catch (error) {
-    return generateErrorResponse(error);
-  }
-}
+    return posts;
+  });
 
 async function getKeywordOfPost(keyword: string) {
   const posts = await db.post.findMany({

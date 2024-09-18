@@ -73,5 +73,5 @@ export const editProfile = async (formData: FormData) => {
   if (userInfoError) {
     return generateErrorResponse(userInfoError);
   }
-  redirect(`/users/${user.username}`);
+  redirect(`/users/${encodeURIComponent(user.username)}`);
 };

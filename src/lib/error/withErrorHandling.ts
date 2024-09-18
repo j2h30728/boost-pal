@@ -8,7 +8,7 @@ export const withErrorHandling =
   async (...args: any[]): Promise<ServerResponse<T>> => {
     try {
       const { data, message } = await fn(...args);
-      if (!data) {
+      if (data === null || data === undefined) {
         throw new NotFoundError();
       }
       return createSuccessResponse({ data: data, message: message });

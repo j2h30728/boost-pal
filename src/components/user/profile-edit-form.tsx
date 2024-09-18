@@ -35,8 +35,8 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
       photo: initialUserInformation.avatar ? `${initialUserInformation.avatar}/small` : "",
     },
   });
-  const onBlurUsername = createBlurValidation(checkEmailAvailability, setError, "username", USERNAME_ERROR_MESSAGE);
-  const onBlurEmail = createBlurValidation(checkUsernameAvailability, setError, "email", EMAIL_ERROR_MESSAGE);
+  const onBlurUsername = createBlurValidation(checkUsernameAvailability, setError, "username", USERNAME_ERROR_MESSAGE);
+  const onBlurEmail = createBlurValidation(checkEmailAvailability, setError, "email", EMAIL_ERROR_MESSAGE);
 
   const onSubmit = handleSubmit(async (data: ProfileType) => {
     const cloudflareForm = new FormData();

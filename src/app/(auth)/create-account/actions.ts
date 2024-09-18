@@ -23,14 +23,14 @@ export async function handleCreateAccount(formData: FormData): Promise<ServerRes
   try {
     const result = accountSchema.safeParse(accountData);
 
-    const checkUsername = await isUsernameExists(result.data?.username!);
-    const checkEmail = await isEmailExists(result.data?.email!);
+    if (!result.success) {
+      console.log(result);
+      throw new ValidationError(formatZodErrorMessage(result.error));
+    }
+    const checkUsername = await isUsernameExists(result.data?.username.trim());
+    const checkEmail = await isEmailExists(result.data?.email.trim());
     if (checkUsername || checkEmail) {
       throw new ValidationError(USER_INFO_ERROR_MESSAGE);
-    }
-
-    if (!result.success) {
-      return { data: null, isSuccess: false, message: formatZodErrorMessage(result.error), error: result.error };
     }
     await createAccount(result.data);
   } catch (error) {

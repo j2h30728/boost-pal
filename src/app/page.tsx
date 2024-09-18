@@ -14,6 +14,8 @@ import { throwErrors } from "@/lib/error/throwErrors";
 import { isSuccessResponse } from "@/lib/error/withErrorHandling";
 import MostPoPularPostList from "@/components/post/most-popular-post-list";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const mostPopularCategoryPostsResponse = await getMostPopularCategoryPosts();
   const categoryResponse = await getMostPopularCategory();

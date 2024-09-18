@@ -11,7 +11,7 @@ export default function SearchPage() {
   return (
     <div className="flex flex-col">
       <SearchForm onSearch={action} />
-      <SearchedPostList searchPosts={state?.data} />
+      <SearchedPostList searchPosts={state?.data} message={state?.message} />
     </div>
   );
 }

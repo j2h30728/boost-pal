@@ -7,15 +7,18 @@ export const createSuccessResponse = <T>({
   data: T;
   message?: string;
 }): SuccessResponse<T> => ({
-  data: data as T,
+  data,
   isSuccess: true,
   message,
   error: null,
 });
 
-export const createFailResponse = ({ error, message }: { error: Error; message?: string }): FailResponse => ({
-  data: null,
-  isSuccess: false,
-  message: message || error.message,
-  error,
-});
+export const createFailResponse = ({ error, message }: { error: Error; message?: string }): FailResponse =>
+  JSON.parse(
+    JSON.stringify({
+      data: null,
+      isSuccess: false,
+      message: message || error.message,
+      error,
+    })
+  );

@@ -27,7 +27,8 @@ export default function InfinitePostList({
     initialCursorId,
   });
 
-  if (posts.length === 0) return <div className="mx-auto py-10 text-xl text-base">인증글이 존재하지 않습니다.</div>;
+  if (posts.length === 0)
+    return <div className="mx-auto py-10 text-xl text-center text-underline">인증글이 존재하지 않습니다.</div>;
 
   return (
     <div className="flex flex-col gap-4">

@@ -1,19 +1,11 @@
+import { throwErrors } from "@/lib/error/throwErrors";
 import { getPostCountByLoggedInUser, getPostsCountForThisMonth } from "@/service/postService";
-import ErrorComponent from "../common/ErrorComponent";
 
 export default async function StatusCard() {
-  const {
-    data: postAllCount,
-    error: postsCountError,
-    message: postsAllCountMessage,
-  } = await getPostCountByLoggedInUser();
-  const {
-    data: PostsCountForThisMonth,
-    error: PostsCountForThisMonthError,
-    message: thisMonthCountMessage,
-  } = await getPostsCountForThisMonth();
+  const { data: postAllCount, error: postsCountError } = await getPostCountByLoggedInUser();
+  const { data: PostsCountForThisMonth, error: PostsCountForThisMonthError } = await getPostsCountForThisMonth();
   if (postsCountError || PostsCountForThisMonthError) {
-    <ErrorComponent message={postsAllCountMessage || thisMonthCountMessage} />;
+    throwErrors(postsCountError, PostsCountForThisMonthError);
   }
   return (
     <div className="flex justify-around w-full *:py-5 *:gap-2 ">

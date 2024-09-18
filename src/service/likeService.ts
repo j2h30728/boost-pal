@@ -1,5 +1,4 @@
 import { withErrorHandling } from "@/lib/error/withErrorHandling";
-import { createSuccessResponse } from "@/lib/server/createServerResponse";
 import db from "@/lib/server/db";
 
 export const getLikeStatus = withErrorHandling(async (postId: number, userId: number) => {
@@ -16,5 +15,5 @@ export const getLikeStatus = withErrorHandling(async (postId: number, userId: nu
       postId,
     },
   });
-  return createSuccessResponse({ data: { isLiked: Boolean(like), likeCount } });
+  return { data: { isLiked: Boolean(like), likeCount } };
 });

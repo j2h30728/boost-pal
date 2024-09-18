@@ -1,13 +1,22 @@
-import { ServerResponse, SuccessResponse } from "@/lib/types";
 import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
+import { ServerResponse, SuccessResponse } from "@/lib/types";
+import { createSuccessResponse } from "../server/createServerResponse";
+import { NotFoundError } from "./customError";
 
 export const withErrorHandling =
-  <T>(fn: (...args: any[]) => Promise<ServerResponse<T>>) =>
+  <T>(fn: (...args: any[]) => Promise<Partial<ServerResponse<T>>>) =>
   async (...args: any[]): Promise<ServerResponse<T>> => {
     try {
-      const data = await fn(...args);
-      return { data, isSuccess: true, message: "", error: null } as SuccessResponse<T>;
+      const { data, message } = await fn(...args);
+      if (!data) {
+        throw new NotFoundError();
+      }
+      return createSuccessResponse({ data: data, message: message });
     } catch (error) {
       return generateErrorResponse(error);
     }
   };
+
+export function isSuccessResponse<T>(response: ServerResponse<T>): response is SuccessResponse<T> {
+  return response.isSuccess;
+}

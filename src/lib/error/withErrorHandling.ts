@@ -2,7 +2,7 @@ import { ServerResponse, SuccessResponse } from "@/lib/types";
 import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
 
 export const withErrorHandling =
-  <T>(fn: (...args: any[]) => Promise<T>) =>
+  <T>(fn: (...args: any[]) => Promise<ServerResponse<T>>) =>
   async (...args: any[]): Promise<ServerResponse<T>> => {
     try {
       const data = await fn(...args);

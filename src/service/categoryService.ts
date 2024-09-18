@@ -1,6 +1,7 @@
 import db from "@/lib/server/db";
 import { NOT_EXISTS_CATEGORY_MESSAGE } from "@/constants/messages";
 import { withErrorHandling } from "@/lib/error/withErrorHandling";
+import { createSuccessResponse } from "@/lib/server/createServerResponse";
 
 export const getMostPopularCategory = withErrorHandling(async () => {
   const categoryGroup = await db.post.groupBy({
@@ -18,5 +19,5 @@ export const getMostPopularCategory = withErrorHandling(async () => {
     throw new Error(NOT_EXISTS_CATEGORY_MESSAGE);
   }
 
-  return topCategory.category;
+  return createSuccessResponse({ data: topCategory.category });
 });

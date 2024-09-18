@@ -22,9 +22,8 @@ export default function LogInForm() {
     const formData = new FormData();
     formData.append("email", data.email);
     formData.append("password", data.password);
-
-    const { message } = await handleLogIn(formData);
-    setError("root", { message });
+    const { message, error } = await handleLogIn(formData);
+    if (error) setError("root", { message });
   });
 
   const onValid = async () => {

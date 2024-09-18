@@ -2,7 +2,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ChevronRightIcon } from "@heroicons/react/24/solid";
 
-import PostList from "@/components/post/post-list";
 import { getMostPopularCategoryPosts, getInitialPosts } from "@/service/postService";
 import InfinitePostList from "@/components/post/infinite-post-list";
 import { getMostPopularCategory } from "@/service/categoryService";
@@ -11,20 +10,19 @@ import TabBar from "@/components/common/tab-bar";
 import { getUserInfoBySession } from "@/service/userService";
 
 import mainImage from "../../public/images/main-image.webp";
-import ErrorComponent from "@/components/common/ErrorComponent";
+import { throwErrors } from "@/lib/error/throwErrors";
+import { isSuccessResponse } from "@/lib/error/withErrorHandling";
+import MostPoPularPostList from "@/components/post/most-popular-post-list";
 
 export default async function Home() {
-  const {
-    data: mostPopularCategoryPosts,
-    error: postsError,
-    message: mostPostsMessage,
-  } = await getMostPopularCategoryPosts();
-  const { data: category, error: categoryError, message: categoryMessage } = await getMostPopularCategory();
-  const { data: initialPosts, error: postError, message: initialPostsMessage } = await getInitialPosts();
-  const { data: user, error: loggedInUserError, message: userMessage } = await getUserInfoBySession();
+  const mostPopularCategoryPostsResponse = await getMostPopularCategoryPosts();
+  const categoryResponse = await getMostPopularCategory();
+  const initialPostsResponse = await getInitialPosts();
+  const userResponse = await getUserInfoBySession();
 
-  if (postsError || categoryError || postError || loggedInUserError) {
-    return <ErrorComponent message={mostPostsMessage || categoryMessage || initialPostsMessage || userMessage} />;
+  if (!isSuccessResponse(initialPostsResponse) || !isSuccessResponse(userResponse)) {
+    throwErrors(mostPopularCategoryPostsResponse.error, initialPostsResponse.error, userResponse.error);
+    return;
   }
 
   return (
@@ -55,19 +53,8 @@ export default async function Home() {
         ))}
       </div>
       <div className="px-5 flex flex-col gap-5 ">
-        {category && (
-          <div className="flex flex-col gap-2">
-            <p className="font-semibold text-xs pl-2 w-fit p-1 rounded-xl bg-white">
-              제일 인증수가 많은 주제에 함께 하세요!
-            </p>
-            <div className="flex justify-between pr-2 *:bg-white *:rounded-xl">
-              <h3 className="font-extrabold text-md mb-2 px-2">최근 다미가 응원한 {CATEGORIES[category]} 인증</h3>
-              <Link href={makeCategoryPath(category)} className="text-base flex items-center text-xs px-2">
-                <span>더보기</span> <ChevronRightIcon className="w-4 h-3" />
-              </Link>
-            </div>
-            <PostList initialPosts={mostPopularCategoryPosts} />
-          </div>
+        {categoryResponse.isSuccess && mostPopularCategoryPostsResponse.isSuccess && (
+          <MostPoPularPostList listOfPost={mostPopularCategoryPostsResponse.data} category={categoryResponse.data} />
         )}
         <div className="flex flex-col gap-4">
           <div className="flex justify-between px-2">
@@ -76,10 +63,13 @@ export default async function Home() {
               <span>더보기</span> <ChevronRightIcon className="w-4 h-3" />
             </Link>
           </div>
-          <InfinitePostList initialPosts={initialPosts.items} initialCursorId={initialPosts.nextCursorId} />
+          <InfinitePostList
+            initialPosts={initialPostsResponse.data.items}
+            initialCursorId={initialPostsResponse.data.nextCursorId}
+          />
         </div>
       </div>
-      <TabBar username={user.username} />
+      <TabBar username={userResponse.data.username} />
     </main>
   );
 }

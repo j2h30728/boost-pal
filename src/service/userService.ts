@@ -3,7 +3,6 @@ import db from "@/lib/server/db";
 import { AuthorizationError, NotFoundError } from "@/lib/error/customError";
 import { NOT_EXISTS_USER_MESSAGE } from "@/constants/messages";
 import { withErrorHandling } from "@/lib/error/withErrorHandling";
-import { createSuccessResponse } from "@/lib/server/createServerResponse";
 
 export const getSessionId = async () => {
   const session = await getSession();
@@ -23,7 +22,7 @@ export const getUserInfoBySession = withErrorHandling(async () => {
   if (!user) {
     throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
   }
-  return createSuccessResponse({ data: user });
+  return { data: user };
 });
 
 export const getUserIdByEmail = withErrorHandling(async (email: string) => {
@@ -38,7 +37,7 @@ export const getUserIdByEmail = withErrorHandling(async (email: string) => {
   if (!user) {
     throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
   }
-  return createSuccessResponse({ data: user });
+  return { data: user };
 });
 
 export const getUserByUsername = withErrorHandling(async (username: string) => {
@@ -53,7 +52,7 @@ export const getUserByUsername = withErrorHandling(async (username: string) => {
   if (!user) {
     throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
   }
-  return createSuccessResponse({ data: user });
+  return { data: user };
 });
 
 export const getUserAuthInfo = withErrorHandling(async () => {
@@ -70,5 +69,5 @@ export const getUserAuthInfo = withErrorHandling(async () => {
   if (!user) {
     throw new NotFoundError(NOT_EXISTS_USER_MESSAGE);
   }
-  return createSuccessResponse({ data: user });
+  return { data: user };
 });

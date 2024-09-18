@@ -41,7 +41,7 @@ const logIn = async ({ email, password }: { email: string; password: string }) =
     },
   });
   if (!user) {
-    throw new NotFoundError(LOGIN_ERROR_MESSAGE);
+    throw new ValidationError(LOGIN_ERROR_MESSAGE);
   }
 
   const isValidPassword = await bcrypt.compare(password, user.password!);

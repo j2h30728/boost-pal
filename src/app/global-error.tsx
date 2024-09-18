@@ -1,12 +1,12 @@
-"use client"; // Error boundaries must be Client Components
+"use client";
+
+import ErrorComponent from "@/components/common/error-component";
 
 export default function GlobalError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   return (
-    // global-error must include html and body tags
     <html>
-      <body>
-        <h2>Something went wrong!</h2>
-        <button onClick={() => reset()}>Try again</button>
+      <body className="relative bg-white max-w-screen-sm mx-auto">
+        <ErrorComponent message={error.message} onReset={reset} />
       </body>
     </html>
   );

@@ -10,13 +10,13 @@ export default function CalendarContents() {
   const [year, month, date] = selectedDate.date.split("-");
 
   if (isLoading) {
-    return <div className="shadow-xl rounded-xl p-4"></div>;
+    return (
+      <div className="w-full py-12 text-underline text-center text-lg font-semibold">{`인증을 가져오는 중..`}</div>
+    );
   }
 
   if (!isLoading && data.length === 0) {
-    return (
-      <div className="w-full text-center text-lg font-semibold text-underline mt-10">{`${currentDate.month}달 인증이 존재하지 않습니다.`}</div>
-    );
+    return;
   }
   return (
     <div className="flex flex-col w-full py-3 gap-5">

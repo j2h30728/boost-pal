@@ -4,7 +4,6 @@ import db from "@/lib/server/db";
 import { NOT_EXISTS_AI_COMMENT_MESSAGE, NOT_EXISTS_POST_MESSAGE } from "@/constants/messages";
 import { NotFoundError } from "@/lib/error/customError";
 import { withErrorHandling } from "@/lib/error/withErrorHandling";
-import { createSuccessResponse } from "@/lib/server/createServerResponse";
 
 const sqs = new AWS.SQS({ region: "ap-northeast-2" });
 
@@ -55,5 +54,5 @@ export const fetchInitialComment = withErrorHandling(async (postId: number) => {
   if (!firstAiComment) {
     throw new NotFoundError(NOT_EXISTS_AI_COMMENT_MESSAGE);
   }
-  return createSuccessResponse({ data: firstAiComment });
+  return { data: firstAiComment };
 });

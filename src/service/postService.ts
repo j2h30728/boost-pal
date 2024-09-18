@@ -10,6 +10,7 @@ import { NotFoundError, ValidationError } from "@/lib/error/customError";
 import { getSessionId } from "./userService";
 import { groupPostsByDate } from "@/lib/utils";
 import { withErrorHandling } from "@/lib/error/withErrorHandling";
+import { createSuccessResponse } from "@/lib/server/createServerResponse";
 
 export const getInitialPosts = withErrorHandling(async (category?: Category) => {
   const posts = await db.post.findMany({
@@ -39,7 +40,7 @@ export const getInitialPosts = withErrorHandling(async (category?: Category) => 
     throw new NotFoundError();
   }
   const nextCursorId = posts.at(-1)?.id || null;
-  return { items: posts, nextCursorId, isLastPage: nextCursorId === null };
+  return createSuccessResponse({ data: { items: posts, nextCursorId, isLastPage: nextCursorId === null } });
 });
 
 export const getPaginatedPosts = withErrorHandling(async (cursorId: number | null, option?: { category: Category }) => {
@@ -74,7 +75,7 @@ export const getPaginatedPosts = withErrorHandling(async (cursorId: number | nul
   }
   const isLastPage = !hasMore;
   const nextCursorId = posts.at(-1)?.id ?? null;
-  return { items: posts, nextCursorId, isLastPage };
+  return createSuccessResponse({ data: { items: posts, nextCursorId, isLastPage } });
 });
 
 export const getPostsByCategory = withErrorHandling(async (category: Category) => {
@@ -101,7 +102,7 @@ export const getPostsByCategory = withErrorHandling(async (category: Category) =
       created_at: "desc",
     },
   });
-  return posts;
+  return createSuccessResponse({ data: posts });
 });
 
 export const getMostPopularCategoryPosts = withErrorHandling(async () => {
@@ -111,13 +112,17 @@ export const getMostPopularCategoryPosts = withErrorHandling(async () => {
   }
 
   if (!category) {
-    return [];
+    return createSuccessResponse({ data: [], message: "인기있는 인증 주제가 존재하지않습니다." });
   }
   const { data: posts, isSuccess: postsSuccess, error: postsError } = await getPostsByCategory(category);
-  if (postsSuccess) {
+  if (!postsSuccess) {
     throw postsError;
   }
-  return posts ?? [];
+  if (!posts || posts.length === 0) {
+    return createSuccessResponse({ data: [], message: "인기있는 인증 주제의 기록이 존재하지 않습니다." });
+  }
+
+  return createSuccessResponse({ data: posts });
 });
 
 export const getPostsByLoggedInUser = withErrorHandling(async () => {
@@ -144,7 +149,7 @@ export const getPostsByLoggedInUser = withErrorHandling(async () => {
       created_at: "desc",
     },
   });
-  return posts;
+  return createSuccessResponse({ data: posts });
 });
 
 export const getPostsCountForThisMonth = withErrorHandling(async () => {
@@ -162,7 +167,7 @@ export const getPostsCountForThisMonth = withErrorHandling(async () => {
       },
     },
   });
-  return postCount;
+  return createSuccessResponse({ data: postCount });
 });
 
 export const getPostCountByLoggedInUser = withErrorHandling(async () => {
@@ -172,7 +177,7 @@ export const getPostCountByLoggedInUser = withErrorHandling(async () => {
       userId: sessionId,
     },
   });
-  return postCount;
+  return createSuccessResponse({ data: postCount });
 });
 
 export const getPostById = withErrorHandling(async (id: number) => {
@@ -180,7 +185,7 @@ export const getPostById = withErrorHandling(async (id: number) => {
   if (!post) {
     throw new NotFoundError();
   }
-  return post;
+  return createSuccessResponse({ data: post });
 });
 
 export const getPostWithUpdateView = withErrorHandling(async (id: number) => {
@@ -207,7 +212,7 @@ export const getPostWithUpdateView = withErrorHandling(async (id: number) => {
       },
     },
   });
-  return post;
+  return createSuccessResponse({ data: post });
 });
 
 export const getWrittenPostByYearnAndMonth = withErrorHandling(async (year: number, month: number) => {
@@ -230,5 +235,5 @@ export const getWrittenPostByYearnAndMonth = withErrorHandling(async (year: numb
     },
   });
   const groupedPosts = groupPostsByDate(posts);
-  return groupedPosts;
+  return createSuccessResponse({ data: groupedPosts });
 });

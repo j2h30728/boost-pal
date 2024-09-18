@@ -1,4 +1,5 @@
 import { withErrorHandling } from "@/lib/error/withErrorHandling";
+import { createSuccessResponse } from "@/lib/server/createServerResponse";
 import db from "@/lib/server/db";
 import { Comment, User } from "@prisma/client";
 
@@ -23,6 +24,6 @@ export const getInitialComments = withErrorHandling(async (postId: number, userI
     },
   });
   const formatComments = comments.map((comment) => ({ ...comment, isAuthor: comment.user.id === userId }));
-  return formatComments;
+  return createSuccessResponse({ data: formatComments });
 });
 export type InitialComments = Comments[];

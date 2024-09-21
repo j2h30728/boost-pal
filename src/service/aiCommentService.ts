@@ -51,5 +51,7 @@ export const fetchInitialComment = async (postId: number) => {
   }));
 
   const [firstAiComment] = aiComments;
+  // 글 작성시, ai comment가 존재하지 않기 않는다.
+  // null 값으로 주어 ai comment가 등록되지 않은 상태로 명시하여, 비동기적으로 ai comment를 생성하고 등록하는 시간 동안 로딩상태를 보여준다.
   return createSuccessResponse({ data: firstAiComment ?? null });
 };

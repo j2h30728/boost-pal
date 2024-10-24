@@ -24,6 +24,9 @@ export default function IntroPage() {
         <Link href={ROUTE_PATHS.CREATE_ACCOUNT} className="text-base text-sm">
           회원가입
         </Link>
+        <Link href={ROUTE_PATHS.KAKAO_LOG_IN} className="text-base text-sm">
+          카카오 로그인
+        </Link>
       </div>
     </main>
   );

@@ -15,7 +15,6 @@ export default async function ProfilePage({ params }: { params: { username: stri
   if (userInfoError || postsError) {
     return throwErrors(userInfoError, postsError);
   }
-
   return (
     <main className="flex flex-col gap-1">
       <div className="flex flex-col">
@@ -30,7 +29,7 @@ export default async function ProfilePage({ params }: { params: { username: stri
             />
             <span className="text-sm">{loggedInUser.username}</span>
           </div>
-          {decodeURI(params.username) === loggedInUser.username && (
+          {decodeURIComponent(params.username) === loggedInUser.username && (
             <div className="ml-auto flex flex-col gap-1 items-center">
               <Link className="primary-button w-fit px-3 py-2" href={`/users/${loggedInUser.username}/edit`}>
                 내 정보 수정

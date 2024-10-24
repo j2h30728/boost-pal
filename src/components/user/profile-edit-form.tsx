@@ -32,7 +32,7 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
       email: initialUserInformation.email ?? "",
       username: initialUserInformation.username,
       bio: initialUserInformation.bio ?? "",
-      photo: initialUserInformation.avatar ? `${initialUserInformation.avatar}/small` : "",
+      photo: initialUserInformation.avatar ?? "",
     },
   });
   const onBlurUsername = createBlurValidation(checkUsernameAvailability, setError, "username", USERNAME_ERROR_MESSAGE);

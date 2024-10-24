@@ -3,6 +3,9 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
+        hostname: "k.kakaocdn.net",
+      },
+      {
         hostname: "picsum.photos",
       },
       {

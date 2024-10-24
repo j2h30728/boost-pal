@@ -71,3 +71,25 @@ export const getUserAuthInfo = withErrorHandling(async () => {
   }
   return { data: user };
 });
+
+export async function createOAuthUser({
+  email,
+  username,
+  avatar = "",
+}: {
+  email: string;
+  username: string;
+  avatar?: string;
+}) {
+  const newUser = await db.user.create({
+    data: {
+      email,
+      username,
+      avatar,
+    },
+    select: {
+      id: true,
+    },
+  });
+  return newUser;
+}

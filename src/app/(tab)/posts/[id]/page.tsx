@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { EyeIcon } from "@heroicons/react/24/solid";
 
@@ -21,10 +22,26 @@ import UserDefaultImage from "@/components/common/user-default-image";
 import DetailImage from "@/components/post/detail-image";
 import { throwErrors } from "@/lib/error/throwErrors";
 
-export async function generateMetadata({ params }: { params: { id: string } }) {
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const { data: product } = await getPostById(Number(params.id));
+  if (!product) return {};
+
   return {
-    title: product?.description.slice(0, 10),
+    title: `BOOST PAL - ${product.description.slice(0, 10)}`,
+    description: product.description.slice(0, 30),
+    openGraph: {
+      title: `BOOST PAL - ${product.description.slice(0, 10)}`,
+      description: product.description.slice(0, 30),
+      url: `https://boostpal.vercel.app/posts/${product.id}`,
+      images: [
+        {
+          url: `${product.photo}/middle`,
+          width: 800,
+          height: 600,
+          alt: product.description.slice(0, 10),
+        },
+      ],
+    },
   };
 }
 

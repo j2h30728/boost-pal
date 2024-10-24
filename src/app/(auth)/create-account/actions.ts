@@ -24,7 +24,6 @@ export async function handleCreateAccount(formData: FormData): Promise<ServerRes
     const result = accountSchema.safeParse(accountData);
 
     if (!result.success) {
-      console.log(result);
       throw new ValidationError(formatZodErrorMessage(result.error));
     }
     const checkUsername = await isUsernameExists(result.data?.username.trim());

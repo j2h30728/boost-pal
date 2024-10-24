@@ -57,7 +57,6 @@ export async function kakaoLogIn(code: string) {
       id: true,
     },
   });
-  console.log(user);
   if (user) {
     const session = await getSession();
     session.id = user.id;

@@ -25,7 +25,9 @@ export default function IntroPage() {
         <Link href={ROUTE_PATHS.CREATE_ACCOUNT} className="text-base text-sm">
           회원가입
         </Link>
-        <Link className="w-full flex gap-3 primary-button bg-yellow-300 text-neutral" href={ROUTE_PATHS.KAKAO_LOG_IN}>
+        <Link
+          className="w-full flex gap-3 primary-button bg-yellow-300 hover:bg-yellow-200 active:bg-yellow-400 text-neutral"
+          href={ROUTE_PATHS.KAKAO_LOG_IN}>
           <KaKaoIcon width={25} height={20} /> 카카오 로그인
         </Link>
       </div>

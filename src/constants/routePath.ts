@@ -1,6 +1,7 @@
 export const ROUTE_PATHS = {
   INTRO: "/intro",
   LOG_IN: "/log-in",
+  KAKAO_LOG_IN: "/oauth/kakao",
   CREATE_ACCOUNT: "/create-account",
   UPLOAD: "/upload",
   HOME: "/",

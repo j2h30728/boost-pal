@@ -7,7 +7,6 @@ import { FailResponse } from "../types";
 import { createFailResponse } from "../server/createServerResponse";
 
 export const generateErrorResponse = (error: unknown, defaultErrorMessage?: string): FailResponse => {
-  console.log(error);
   if (error instanceof AuthorizationError || error instanceof ValidationError) {
     return createFailResponse({ message: error.message, error: error });
   }

@@ -18,7 +18,7 @@ export default function UserDefaultImage({
     <div className={`relative rounded-full ${style}`}>
       {avatar ? (
         <Image
-          src={`${avatar}/small`}
+          src={`${avatar.includes("imagedelivery") ? avatar + "/small" : avatar}`}
           className={`rounded-full aspect-square w-full`}
           width={width}
           height={height}

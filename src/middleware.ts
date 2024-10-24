@@ -1,14 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSession } from "./lib/server/session";
+import { ROUTE_PATHS } from "./constants/routePath";
+
+const PUBLIC_URL: string[] = [
+  ROUTE_PATHS.INTRO,
+  ROUTE_PATHS.CREATE_ACCOUNT,
+  ROUTE_PATHS.LOG_IN,
+  ROUTE_PATHS.KAKAO_LOG_IN,
+  ROUTE_PATHS.KAKAO_LOG_IN + "/redirect",
+];
 
 export async function middleware(req: NextRequest) {
   const session = await getSession();
 
-  if (
-    req.nextUrl.pathname === "/intro" ||
-    req.nextUrl.pathname.startsWith("/create-account") ||
-    req.nextUrl.pathname.startsWith("/log-in")
-  ) {
+  if (PUBLIC_URL.includes(req.nextUrl.pathname)) {
     if (session.id) {
       return NextResponse.redirect(new URL("/", req.url));
     } else {
@@ -16,8 +21,8 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  if (!session.id && !req.nextUrl.pathname.startsWith("/intro")) {
-    return NextResponse.redirect(new URL("/intro", req.url));
+  if (!session.id && !req.nextUrl.pathname.startsWith(ROUTE_PATHS.INTRO)) {
+    return NextResponse.redirect(new URL(ROUTE_PATHS.INTRO, req.url));
   }
 }
 export const config = {

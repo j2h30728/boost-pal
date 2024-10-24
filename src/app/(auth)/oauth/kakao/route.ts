@@ -1,4 +1,4 @@
-const BASE_URL = "https://kauth.kakao.com/oauth/authorize";
+const KAKAO_BASE_URL = "https://kauth.kakao.com/oauth/authorize";
 
 export function GET() {
   const params = {
@@ -7,6 +7,6 @@ export function GET() {
     response_type: "code",
   };
   const formattedParams = new URLSearchParams(params).toString();
-  const finalUrl = `${BASE_URL}?${formattedParams}`;
+  const finalUrl = `${KAKAO_BASE_URL}?${formattedParams}`;
   return Response.redirect(finalUrl);
 }

@@ -10,7 +10,17 @@ export const metadata: Metadata = {
   description: "부스트팔은 일상적인 기록을 저장하고 응원을 받을 수 있는 서비스입니다.",
   keywords: ["BOOST PAL", "부스트팔", "일상 기록", "동기부여", "챌린지", "daily goals", "motivation", "challenge"],
   metadataBase: new URL("https://boostpal.vercel.app"),
-  icons: { icon: "/favicons/favicon.ico", apple: "/favicons/apple-touch-icon.png" },
+  icons: {
+    icon: [
+      { url: "/favicons/favicon-48x48.png", sizes: "48x48", type: "image/png" },
+      { url: "/favicons/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicons/favicon.ico" },
+    ],
+    shortcut: [{ url: "/favicons/favicon.ico" }],
+    apple: [{ url: "/favicons/apple-touch-icon.png", sizes: "180x180" }],
+  },
+  manifest: "/favicons/site.webmanifest",
+
   openGraph: {
     title: "BOOST PAL - 부스트팔",
     description: "부스트팔에서 일상을 기록하고 응원을 받으세요.",

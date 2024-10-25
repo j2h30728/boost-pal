@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
       url: `https://boostpal.vercel.app/posts/${product.id}`,
       images: [
         {
-          url: `${product.photo}/middle`,
+          url: product.photo ? `${product.photo}/middle` : "/images/og-image.jpg",
           width: 800,
           height: 600,
           alt: product.description.slice(0, 10),

@@ -64,8 +64,8 @@ export const postSchema = z.object({
       required_error: "자세한 설명은 필수 값입니다.",
     })
     .trim()
-    .min(1, "자세한 설명은 빈 값이 될 수 없습니다."),
-  category: z.string().refine(isCategory, "잘못된 주제선택입니다."),
+    .min(1, "자세한 설명을 입력해주세요."),
+  category: z.string({ message: "해당하는 주제를 선택해주세요" }).refine(isCategory, "잘못된 주제선택입니다."),
 });
 
 export const commentSchema = z

@@ -74,9 +74,11 @@ export default function UploadForm() {
           <p className="text-md font-bold">주제</p>
           <p className="text-neutral text-sm">작성하신 인증 주제를 1가지 선택해주세요.</p>
           <div className="flex flex-wrap gap-1">
-            {Object.entries(CATEGORIES).map(([value, title]) => (
-              <InputChip key={value} value={value} type="radio" title={title} {...register("category")} />
-            ))}
+            {Object.entries(CATEGORIES)
+              .slice(1)
+              .map(([value, title]) => (
+                <InputChip key={value} value={value} type="radio" title={title} {...register("category")} />
+              ))}
           </div>
           <p className="text-error">{errors.category?.message}</p>
         </div>

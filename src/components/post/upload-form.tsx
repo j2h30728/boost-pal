@@ -11,6 +11,7 @@ import { postSchema, UploadPostType } from "@/lib/schema";
 import { CATEGORIES } from "@/constants/categories";
 import useUploadImage from "@/hooks/useUploadImage";
 import { uploadPost } from "@/app/upload/actions";
+import { IMAGES_OPTIONS } from "@/constants/images";
 
 export default function UploadForm() {
   const { dispatch, state } = useUploadImage();
@@ -63,7 +64,7 @@ export default function UploadForm() {
           ) : null}
         </label>
         <input
-          onChange={(e) => dispatch.handleImageChange(e, setValue)}
+          onChange={(e) => dispatch.handleImageChange(e, setValue, IMAGES_OPTIONS.PUBLIC)}
           type="file"
           id="photo"
           name="photo"

@@ -12,7 +12,6 @@ import { PASSWORD_ERROR_MESSAGE, USER_INFO_ERROR_MESSAGE } from "@/constants/mes
 import { cacheTags } from "@/lib/cacheTags";
 import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
 import { ValidationError } from "@/lib/error/customError";
-import { createUploadImageUrl, IMAGES_OPTIONS } from "@/lib/images";
 
 export const editProfile = async (formData: FormData) => {
   const data = {
@@ -49,7 +48,7 @@ export const editProfile = async (formData: FormData) => {
           username: result.data?.username,
           password: hashedNewPassword,
           bio: result.data?.bio,
-          avatar: createUploadImageUrl(result.data.photo, IMAGES_OPTIONS.SMALL),
+          avatar: result.data.photo,
         },
       });
     }
@@ -63,7 +62,7 @@ export const editProfile = async (formData: FormData) => {
         username: result.data?.username,
         password: loggedInUser?.password,
         bio: result.data?.bio,
-        avatar: createUploadImageUrl(result.data.photo, IMAGES_OPTIONS.SMALL),
+        avatar: result.data.photo,
       },
     });
   } catch (error) {

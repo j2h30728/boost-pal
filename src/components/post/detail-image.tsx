@@ -13,7 +13,7 @@ export default function DetailImage({ src, alt }: { src: string; alt: string }) 
         className="object-contain"
         priority
         fill
-        src={`${src}/public`}
+        src={src}
         alt={alt}
         onLoad={(e) => {
           setIsImageLoaded(true);

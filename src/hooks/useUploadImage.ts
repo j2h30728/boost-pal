@@ -1,3 +1,4 @@
+import { IMAGES_OPTIONS_TYPE } from "@/constants/images";
 import { getUploadUrl } from "@/service/imageService";
 import { useState } from "react";
 
@@ -8,7 +9,8 @@ export default function useUploadImage(initialImage?: string) {
 
   const handleImageChange = async (
     event: React.ChangeEvent<HTMLInputElement>,
-    setValueOfForm: (name: "photo", value: string) => void
+    setValueOfForm: (name: "photo", value: string) => void,
+    option: IMAGES_OPTIONS_TYPE
   ) => {
     const { files } = event.target;
 
@@ -26,7 +28,7 @@ export default function useUploadImage(initialImage?: string) {
     if (success) {
       const { id, uploadURL } = result;
       setUploadUrl(uploadURL);
-      setValueOfForm("photo", `https://imagedelivery.net/wLHa2XjZzk_8Ca42_eTQww/${id}`);
+      setValueOfForm("photo", `https://imagedelivery.net/wLHa2XjZzk_8Ca42_eTQww/${id}/${option}`);
     }
   };
   const handleImageCancel = () => {

@@ -13,6 +13,7 @@ import { editProfile } from "@/app/(tab)/users/[username]/edit/actions";
 import { createBlurValidation } from "@/lib/client/form-validate";
 import { checkEmailAvailability, checkUsernameAvailability } from "@/lib/server/validate";
 import { EMAIL_ERROR_MESSAGE, USERNAME_ERROR_MESSAGE } from "@/constants/messages";
+import { IMAGES_OPTIONS } from "@/constants/images";
 
 export default function ProfileEditForm({ initialUserInformation }: { initialUserInformation: User }) {
   const { dispatch, state } = useUploadImage(initialUserInformation.avatar ?? "");
@@ -88,7 +89,7 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
           </button>
         </div>
         <input
-          onChange={(e) => dispatch.handleImageChange(e, setValue)}
+          onChange={(e) => dispatch.handleImageChange(e, setValue, IMAGES_OPTIONS.SMALL)}
           type="file"
           id="photo"
           name="photo"

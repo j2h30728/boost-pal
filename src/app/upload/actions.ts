@@ -9,7 +9,7 @@ import { ServerResponse } from "@/lib/types";
 import { formatZodErrorMessage } from "@/lib/utils";
 import { generateErrorResponse } from "@/lib/error/generateErrorResponse";
 import { getSessionId } from "@/service/userService";
-import { createUploadImageUrl } from "@/lib/images";
+import { createUploadImageUrl, IMAGES_OPTIONS } from "@/lib/images";
 
 export const uploadPost = async (formData: FormData): Promise<ServerResponse<unknown>> => {
   let postId: number;
@@ -42,7 +42,7 @@ export const uploadPost = async (formData: FormData): Promise<ServerResponse<unk
     sendAiCommentToSQS({
       postId: post.id,
       userId: post.userId,
-      imageUrl: createUploadImageUrl(post.photo, "middle"),
+      imageUrl: createUploadImageUrl(post.photo, IMAGES_OPTIONS.MIDDLE),
       description: post.description,
     });
   } catch (error) {

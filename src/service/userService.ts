@@ -98,3 +98,16 @@ export async function createOAuthUser({
   });
   return newUser;
 }
+
+export const isSocialUserSession = async () => {
+  const sessionId = await getSessionId();
+  const user = await db.user.findUnique({
+    where: {
+      id: sessionId,
+    },
+    select: {
+      isSocialUser: true,
+    },
+  });
+  return Boolean(user?.isSocialUser);
+};

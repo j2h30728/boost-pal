@@ -75,10 +75,12 @@ export const getUserAuthInfo = withErrorHandling(async () => {
 export async function createOAuthUser({
   email,
   username,
+  socialId,
   avatar = "",
 }: {
   email: string;
   username: string;
+  socialId: string;
   avatar?: string;
 }) {
   const newUser = await db.user.create({
@@ -86,6 +88,9 @@ export async function createOAuthUser({
       email,
       username,
       avatar,
+      socialId,
+      isSocialUser: true,
+      provider: "KAKAO",
     },
     select: {
       id: true,

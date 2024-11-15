@@ -3,6 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UserIcon } from "@heroicons/react/24/solid";
+import { User } from "@prisma/client";
 
 import Button from "../common/button";
 import Input from "../common/input";
@@ -12,12 +13,9 @@ import { editProfile } from "@/app/(tab)/users/[username]/edit/actions";
 import { createBlurValidation } from "@/lib/client/form-validate";
 import { checkEmailAvailability, checkUsernameAvailability } from "@/lib/server/validate";
 import { EMAIL_ERROR_MESSAGE, USERNAME_ERROR_MESSAGE } from "@/constants/messages";
-import { User } from "@prisma/client";
 
 export default function ProfileEditForm({ initialUserInformation }: { initialUserInformation: User }) {
-  const { dispatch, state } = useUploadImage(
-    initialUserInformation.avatar ? `${initialUserInformation.avatar}/small` : ""
-  );
+  const { dispatch, state } = useUploadImage(initialUserInformation.avatar ?? "");
 
   const {
     register,
@@ -35,6 +33,7 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
       photo: initialUserInformation.avatar ?? "",
     },
   });
+
   const onBlurUsername = createBlurValidation(checkUsernameAvailability, setError, "username", USERNAME_ERROR_MESSAGE);
   const onBlurEmail = createBlurValidation(checkEmailAvailability, setError, "email", EMAIL_ERROR_MESSAGE);
 

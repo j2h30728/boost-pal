@@ -7,6 +7,8 @@ export const createUploadImageUrl = (
   imageUrl?: string,
   option?: (typeof IMAGES_OPTIONS)[keyof typeof IMAGES_OPTIONS]
 ) => {
-  if (!imageUrl) return "";
+  if (!imageUrl) {
+    return "";
+  }
   return option ? `${imageUrl}/${option}` : imageUrl;
 };

@@ -26,6 +26,10 @@ model User {
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
+  provider     AuthProvider @default(LOCAL)
+  socialId     String?      @unique
+  isSocialUser Boolean      @default(false)
+
   posts      Post[]
   likes      Like[]
   comments   Comment[]
@@ -35,6 +39,11 @@ model User {
 enum Role {
   USER
   ADMIN
+}
+
+enum AuthProvider {
+  LOCAL
+  KAKAO
 }
 
 model AiBot {

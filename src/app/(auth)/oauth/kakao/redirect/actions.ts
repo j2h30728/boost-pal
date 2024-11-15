@@ -20,10 +20,10 @@ export async function kakaoLogIn(code: string) {
     });
   }
 
-  const { kakao_account, id: profileId } = await getKaKoProfile(access_token);
+  const { kakao_account, id: socialId } = await getKaKoProfile(access_token);
   let user = await db.user.findUnique({
     where: {
-      email: kakao_account.email,
+      socialId: socialId.toString(),
     },
     select: {
       id: true,
@@ -34,8 +34,9 @@ export async function kakaoLogIn(code: string) {
   if (!user) {
     user = await createOAuthUser({
       email: kakao_account.email,
-      username: kakao_account.profile.nickname + profileId,
+      username: kakao_account.profile.nickname + socialId,
       avatar: kakao_account.profile.profile_image_url,
+      socialId: socialId.toString(),
     });
   }
 

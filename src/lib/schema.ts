@@ -84,7 +84,7 @@ export const keywordSchema = z
   .min(1, "검색어는 빈 값이 될 수 없습니다.")
   .max(20, "검색어는 최대 20자 입니다.");
 
-export const profileSchema = z.object({
+export const localUserProfileSchema = z.object({
   email: z
     .string({
       required_error: "이메일은 필수 값입니다.",
@@ -117,7 +117,25 @@ export const profileSchema = z.object({
   photo: z.string().optional(),
 });
 
+export const socialUserProfileSchema = z.object({
+  username: z
+    .string({
+      invalid_type_error: "이름은 문자만 가능합니다.",
+      required_error: "이름은 필수 값입니다.",
+    })
+    .trim()
+    .min(USERNAME_MIN_LENGTH, "이름은 2글자 이상이어야 합니다."),
+  bio: z
+    .string()
+    .trim()
+    .optional()
+    .refine((value) => !value || value.length <= 200, {
+      message: "소개글은 200글자 이하이어야 합니다.",
+    }),
+  photo: z.string().optional(),
+});
+
 export type CreateAccountType = z.infer<typeof accountSchema>;
 export type LogInType = z.infer<typeof logInSchema>;
 export type UploadPostType = z.infer<typeof postSchema>;
-export type ProfileType = z.infer<typeof profileSchema>;
+export type ProfileType = z.infer<typeof localUserProfileSchema>;

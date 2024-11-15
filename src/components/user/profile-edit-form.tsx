@@ -8,7 +8,7 @@ import { User } from "@prisma/client";
 import Button from "../common/button";
 import Input from "../common/input";
 import useUploadImage from "@/hooks/useUploadImage";
-import { profileSchema, ProfileType } from "@/lib/schema";
+import { localUserProfileSchema, ProfileType, socialUserProfileSchema } from "@/lib/schema";
 import { editProfile } from "@/app/(tab)/users/[username]/edit/actions";
 import { createBlurValidation } from "@/lib/client/form-validate";
 import { checkEmailAvailability, checkUsernameAvailability } from "@/lib/server/validate";
@@ -26,7 +26,7 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
     getValues,
     formState: { errors },
   } = useForm<ProfileType>({
-    resolver: zodResolver(profileSchema),
+    resolver: zodResolver(initialUserInformation.isSocialUser ? socialUserProfileSchema : localUserProfileSchema),
     defaultValues: {
       email: initialUserInformation.email ?? "",
       username: initialUserInformation.username,
@@ -55,8 +55,11 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
     formData.append("newPassword", data.newPassword ?? "");
     formData.append("bio", data.bio ?? "");
     formData.append("photo", data.photo ?? "");
-    const errors = await editProfile(formData);
-    setError("password", { message: errors?.toString() });
+    const { isSuccess, message } = await editProfile(formData);
+    console.log(message);
+    if (!isSuccess) {
+      setError("root", { message });
+    }
   });
 
   const onValid = async () => {
@@ -105,38 +108,43 @@ export default function ProfileEditForm({ initialUserInformation }: { initialUse
         errorMessage={errors.username?.message}
         {...register("username", { onBlur: onBlurUsername })}
       />
-      <Input
-        label="이메일"
-        type="email"
-        required
-        placeholder="이메일을 입력해주세요."
-        errorMessage={errors.email?.message}
-        {...register("email", { onBlur: onBlurEmail })}
-      />
-      <Input
-        label="현재 비밀번호"
-        type="password"
-        required
-        placeholder="현재 비밀번호를 입력해주세요."
-        errorMessage={errors.password?.message}
-        {...register("password")}
-      />
-      <Input
-        label="새 비밀번호"
-        type="password"
-        required={false}
-        placeholder="변경할 새로운 비밀번호를 입력해주세요."
-        errorMessage={errors.newPassword?.message}
-        {...register("newPassword")}
-      />
+      {!initialUserInformation.isSocialUser && (
+        <>
+          <Input
+            label="이메일"
+            type="email"
+            required={!initialUserInformation.isSocialUser}
+            placeholder="이메일을 입력해주세요."
+            errorMessage={errors.email?.message}
+            {...register("email", { onBlur: onBlurEmail })}
+          />
+          <Input
+            label="현재 비밀번호"
+            type="password"
+            required={!initialUserInformation.isSocialUser}
+            placeholder="현재 비밀번호를 입력해주세요."
+            errorMessage={errors.password?.message}
+            {...register("password")}
+          />
+          <Input
+            label="새 비밀번호"
+            type="password"
+            required={false}
+            placeholder="변경할 새로운 비밀번호를 입력해주세요."
+            errorMessage={errors.newPassword?.message}
+            {...register("newPassword")}
+          />
+        </>
+      )}
       <Input
         label="자기소개"
         type="text"
         required={false}
         placeholder="자기소개를 입력해주세요."
-        errorMessage={errors.email?.message}
+        errorMessage={errors.bio?.message}
         {...register("bio")}
       />
+      <p className="w-full text-center text-error">{errors.root?.message}</p>
       <Button text="수정 완료" />
     </form>
   );
